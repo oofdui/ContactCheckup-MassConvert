@@ -843,46 +843,14 @@ namespace MassConvert
                 return;
             }
             #endregion
-            int CountCheckBox = 0;
-            for (int r = 0; r <= gvPatient.Rows.Count - 1; r++)
+            if (!backgroundWorker1.IsBusy)
             {
-                //Loop ทำงานเฉพาะคนที่ Check Box
-                if (Convert.ToBoolean(gvPatient.Rows[r].Cells["Check"].Value) == true)
-                {
-                    CountCheckBox++;
-                }
+                backgroundWorker1.RunWorkerAsync();
             }
-            progressBar1.Maximum = CountCheckBox;
-            progressBar1.Step = 1;
-            progressBar1.Value1 = 0;
-            for (int i = 0; i <= gvPatient.Rows.Count - 1; i++)
+            else
             {
-                //Loop ทำงานเฉพาะคนที่ Check Box
-                if (Convert.ToBoolean(gvPatient.Rows[i].Cells["Check"].Value) == true)
-                {
-                    StringBuilder SQLPT = new StringBuilder();
-                    SQLPT.Append("SELECT * FROM [PatientScheduleOrder] ps");
-                    SQLPT.Append(" inner join Patient p on p.UID = ps.PatientUID ");
-                    SQLPT.Append(" and p.Forename = N'" + gvPatient.Rows[i].Cells["Name"].Value.ToString().Trim() + "'");
-                    SQLPT.Append(" and Surname = N'" + gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim() + "'");
-                    SQLPT.Append(" and ps.ScheduledDttm between '" + Convert.ToDateTime(gvPatient.Rows[i].Cells["DOE"].Value).ToString("yyyy-MM-dd HH:mm:ss") + "' and '" + Convert.ToDateTime(gvPatient.Rows[i].Cells["DOE"].Value).ToString("yyyy-MM-dd HH:mm:ss") + "'");
-                    SQLPT.Append(" and ps.StatusFlag = 'A'");
-                    DataTable dt = new DataTable();
-                    dt = db.Select_OrderNo(SQLPT.ToString());
-                    if (dt.Rows.Count > 0)
-                    {
-                        ConvertPreOrder(dt.Rows[0]["ScheduleOrderNumber"].ToString());
-                        //ConvertPreOrder("180");
-                    }
-                }
-                if (progressBar1.Value1 > progressBar1.Maximum)
-                {
-                    progressBar1.Value1++;
-                    lblStatus.Text = "Convert order of " + gvPatient.Rows[i].Cells["Name"].Value.ToString().Trim() + "  " + gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim();
-                }
-                lblStatus.Text = "Convert order successful.";
+                MessageBox.Show("โปรแกรมยังทำงานค้างไม่เสร็จ โปรดรอสักครู่", "Please wait.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            MessageBox.Show("Convert order successful.");
         }
         private string FindAgreementPercentTag(string AgreementUID)
         {
@@ -898,7 +866,6 @@ namespace MassConvert
                 ex.ToString();
                 return PercentTag;
             }
-            
         }
 
         private void cboPayor_SelectedIndexChanged_1(object sender, Telerik.WinControls.UI.Data.PositionChangedEventArgs e)
@@ -958,6 +925,135 @@ namespace MassConvert
                     }
                 }
             }
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            #region Variable
+            var countLoop = 0;
+            var SQLPT = new StringBuilder();
+            #endregion
+            setRadButton(btCancel, true);
+            #region FindMaxLoop
+            int CountCheckBox = 0;
+            for (int r = 0; r <= gvPatient.Rows.Count - 1; r++)
+            {
+                //Loop ทำงานเฉพาะคนที่ Check Box
+                if (Convert.ToBoolean(gvPatient.Rows[r].Cells["Check"].Value) == true)
+                {
+                    CountCheckBox++;
+                }
+            }
+            #endregion
+            setProgressBar(progressBar1, CountCheckBox, 0);
+            for (int i = 0; i <= gvPatient.Rows.Count - 1; i++)
+            {
+                if (backgroundWorker1.CancellationPending)
+                {
+                    setProgressBar(progressBar1, CountCheckBox, 0);
+                    e.Cancel = true;
+                    setRadButton(btCancel, false);
+                    MessageBox.Show("ขั้นตอนถูกยกเลิกโดย User"+Environment.NewLine+
+                        "ดำเนินการไปแล้วทั้งสิ้น "+countLoop.ToString()+" จากทั้งหมด "+CountCheckBox.ToString()+" รายการ", "Cancel by User.", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    return;
+                }
+                //Loop ทำงานเฉพาะคนที่ Check Box
+                if (Convert.ToBoolean(gvPatient.Rows[i].Cells["Check"].Value) == true)
+                {
+                    countLoop += 1;
+                    setProgressBar(progressBar1, CountCheckBox, countLoop);
+                    setLabel(lblStatus, string.Format("Converting order of {0} {1}", gvPatient.Rows[i].Cells["Name"].Value.ToString().Trim(), gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim()));
+
+                    #region SQLQuery
+                    SQLPT.Append("SELECT * FROM [PatientScheduleOrder] ps");
+                    SQLPT.Append(" inner join Patient p on p.UID = ps.PatientUID ");
+                    SQLPT.Append(" and p.Forename = N'" + gvPatient.Rows[i].Cells["Name"].Value.ToString().Trim() + "'");
+                    SQLPT.Append(" and Surname = N'" + gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim() + "'");
+                    SQLPT.Append(" and ps.ScheduledDttm between '" + Convert.ToDateTime(gvPatient.Rows[i].Cells["DOE"].Value).ToString("yyyy-MM-dd HH:mm:ss") + "' and '" + Convert.ToDateTime(gvPatient.Rows[i].Cells["DOE"].Value).ToString("yyyy-MM-dd HH:mm:ss") + "'");
+                    SQLPT.Append(" and ps.StatusFlag = 'A'");
+                    #endregion
+                    DataTable dt = new DataTable();
+                    dt = db.Select_OrderNo(SQLPT.ToString());
+                    if (dt.Rows.Count > 0)
+                    {
+                        ConvertPreOrder(dt.Rows[0]["ScheduleOrderNumber"].ToString());
+                    }
+                    //System.Threading.Thread.Sleep(5000);
+                }
+                setLabel(lblStatus, string.Format("Converting order ",""));
+            }
+            setRadButton(btCancel, false);
+            MessageBox.Show(string.Format("Convert order successful {0} from {1}",countLoop.ToString(),CountCheckBox.ToString()));
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //MessageBox.Show("Completed.");
+        }
+        private void setProgressBar(ProgressBar control,int maxValue,int value)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(new MethodInvoker(delegate
+                {
+                    control.Maximum = maxValue;
+                    control.Value = value;
+                }));
+            }
+            else
+            {
+                control.Maximum = maxValue;
+                control.Value = value;
+            }
+        }
+        private void setLabel(Label control, string text)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(new MethodInvoker(delegate
+                {
+                    control.Text = text;
+                }));
+            }
+            else
+            {
+                control.Text = text;
+            }
+        }
+        private void setRadButton(RadButton control, bool enable)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(new MethodInvoker(delegate
+                {
+                    control.Enabled = enable;
+                }));
+            }
+            else
+            {
+                control.Enabled = enable;
+            }
+        }
+
+        private void gvPatient_RowFormatting(object sender, RowFormattingEventArgs e)
+        {
+            if (e.RowElement.RowInfo.Cells["STS"].Value.ToString().Trim() == "R")
+            {
+                e.RowElement.DrawFill = true;
+                e.RowElement.GradientStyle = GradientStyles.Solid;
+                e.RowElement.BackColor = ColorTranslator.FromHtml("#FFD544");
+            }
+            else
+            {
+                e.RowElement.DrawFill = true;
+                e.RowElement.GradientStyle = GradientStyles.Solid;
+                e.RowElement.BackColor = ColorTranslator.FromHtml("#FFFFFF");
+            }
+        }
+
+        private void btCancel_Click(object sender, EventArgs e)
+        {
+            backgroundWorker1.CancelAsync();
         }
     }
 }

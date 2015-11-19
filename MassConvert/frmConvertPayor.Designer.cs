@@ -30,9 +30,7 @@
         {
             this.desertTheme1 = new Telerik.WinControls.Themes.DesertTheme();
             this.radLabel1 = new Telerik.WinControls.UI.RadLabel();
-            this.lblStatus = new Telerik.WinControls.UI.RadLabel();
             this.chkBox = new Telerik.WinControls.UI.RadCheckBox();
-            this.progressBar1 = new Telerik.WinControls.UI.RadProgressBar();
             this.txtFilterPayor = new Telerik.WinControls.UI.RadTextBox();
             this.gvPatient = new Telerik.WinControls.UI.RadGridView();
             this.btConvert = new Telerik.WinControls.UI.RadButton();
@@ -63,10 +61,11 @@
             this.cboPayorOffice = new Telerik.WinControls.UI.RadDropDownList();
             this.cboAgreement = new Telerik.WinControls.UI.RadDropDownList();
             this.cboPayor = new Telerik.WinControls.UI.RadDropDownList();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.btCancel = new Telerik.WinControls.UI.RadButton();
             ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lblStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.progressBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtFilterPayor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvPatient)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvPatient.MasterTemplate)).BeginInit();
@@ -91,6 +90,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.cboPayorOffice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cboAgreement)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cboPayor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btCancel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -103,16 +103,6 @@
             this.radLabel1.Size = new System.Drawing.Size(126, 19);
             this.radLabel1.TabIndex = 45;
             this.radLabel1.Text = "Filter by Company :";
-            // 
-            // lblStatus
-            // 
-            this.lblStatus.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.lblStatus.Location = new System.Drawing.Point(12, 416);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(52, 15);
-            this.lblStatus.TabIndex = 51;
-            this.lblStatus.Text = "Waiting...";
             // 
             // chkBox
             // 
@@ -131,23 +121,6 @@
             this.chkBox.Text = "Check All";
             this.chkBox.ThemeName = "Desert";
             this.chkBox.ToggleStateChanged += new Telerik.WinControls.UI.StateChangedEventHandler(this.chkBox_ToggleStateChanged);
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.progressBar1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.progressBar1.ImageIndex = -1;
-            this.progressBar1.ImageKey = "";
-            this.progressBar1.ImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.progressBar1.Location = new System.Drawing.Point(12, 437);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.SeparatorColor1 = System.Drawing.Color.White;
-            this.progressBar1.SeparatorColor2 = System.Drawing.Color.White;
-            this.progressBar1.SeparatorColor3 = System.Drawing.Color.White;
-            this.progressBar1.SeparatorColor4 = System.Drawing.Color.White;
-            this.progressBar1.Size = new System.Drawing.Size(692, 23);
-            this.progressBar1.TabIndex = 52;
-            this.progressBar1.ThemeName = "Desert";
             // 
             // txtFilterPayor
             // 
@@ -174,7 +147,6 @@
             // gvPatient
             // 
             this.gvPatient.MasterTemplate.AllowAddNewRow = false;
-            this.gvPatient.MasterTemplate.AutoSizeColumnsMode = Telerik.WinControls.UI.GridViewAutoSizeColumnsMode.Fill;
             this.gvPatient.Name = "gvPatient";
             this.gvPatient.Padding = new System.Windows.Forms.Padding(1);
             // 
@@ -187,6 +159,7 @@
             this.gvPatient.TabIndex = 42;
             this.gvPatient.Text = "radGridView1";
             this.gvPatient.ThemeName = "Desert";
+            this.gvPatient.RowFormatting += new Telerik.WinControls.UI.RowFormattingEventHandler(this.gvPatient_RowFormatting);
             // 
             // btConvert
             // 
@@ -200,7 +173,7 @@
             // 
             this.btConvert.RootElement.ControlBounds = new System.Drawing.Rectangle(717, 417, 130, 24);
             this.btConvert.RootElement.Enabled = false;
-            this.btConvert.Size = new System.Drawing.Size(227, 43);
+            this.btConvert.Size = new System.Drawing.Size(115, 43);
             this.btConvert.TabIndex = 49;
             this.btConvert.Text = "Convert.";
             this.btConvert.ThemeName = "Desert";
@@ -231,6 +204,12 @@
             this.radGroupBox2.Size = new System.Drawing.Size(693, 291);
             this.radGroupBox2.TabIndex = 48;
             this.radGroupBox2.ThemeName = "Desert";
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.WorkerSupportsCancellation = true;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // btFind
             // 
@@ -622,14 +601,49 @@
             this.cboPayor.SelectedIndexChanged += new Telerik.WinControls.UI.Data.PositionChangedEventHandler(this.cboPayor_SelectedIndexChanged_1);
             this.cboPayor.Click += new System.EventHandler(this.cboPayor_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(13, 436);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(691, 23);
+            this.progressBar1.TabIndex = 54;
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Location = new System.Drawing.Point(11, 417);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(43, 13);
+            this.lblStatus.TabIndex = 55;
+            this.lblStatus.Text = "Waiting";
+            // 
+            // btCancel
+            // 
+            this.btCancel.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btCancel.Enabled = false;
+            this.btCancel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.btCancel.Location = new System.Drawing.Point(838, 417);
+            this.btCancel.Name = "btCancel";
+            // 
+            // 
+            // 
+            this.btCancel.RootElement.ControlBounds = new System.Drawing.Rectangle(717, 417, 130, 24);
+            this.btCancel.RootElement.Enabled = false;
+            this.btCancel.Size = new System.Drawing.Size(115, 43);
+            this.btCancel.TabIndex = 49;
+            this.btCancel.Text = "Cancel";
+            this.btCancel.ThemeName = "Desert";
+            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
+            // 
             // frmConvertPayor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(956, 470);
-            this.Controls.Add(this.radGroupBox3);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.radGroupBox3);
+            this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btConvert);
             this.Controls.Add(this.radGroupBox2);
             this.Controls.Add(this.radGroupBox1);
@@ -642,9 +656,7 @@
             this.ThemeName = "Desert";
             this.Load += new System.EventHandler(this.frmConvertPayor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lblStatus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.progressBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtFilterPayor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvPatient.MasterTemplate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvPatient)).EndInit();
@@ -672,6 +684,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.cboPayorOffice)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cboAgreement)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cboPayor)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btCancel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -682,9 +695,7 @@
 
         private Telerik.WinControls.Themes.DesertTheme desertTheme1;
         private Telerik.WinControls.UI.RadLabel radLabel1;
-        private Telerik.WinControls.UI.RadLabel lblStatus;
         private Telerik.WinControls.UI.RadCheckBox chkBox;
-        private Telerik.WinControls.UI.RadProgressBar progressBar1;
         private Telerik.WinControls.UI.RadTextBox txtFilterPayor;
         private Telerik.WinControls.UI.RadGridView gvPatient;
         private Telerik.WinControls.UI.RadButton btConvert;
@@ -715,5 +726,8 @@
         private System.Windows.Forms.RadioButton rbNotRegister;
         private System.Windows.Forms.RadioButton rbAll;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label lblStatus;
+        private Telerik.WinControls.UI.RadButton btCancel;
     }
 }
