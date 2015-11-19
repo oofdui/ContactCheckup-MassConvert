@@ -1,0 +1,8 @@
+@"insert PatientPackageItem (PatientPackageUID,BSMDDUID,BillableItemUID,ItemName,Amount,PatientBillUID,CUser,CWhen,MUser,MWhen,StatusFlag,OwnerOrganisationUID,Discount,ItemMultiplier,ActualAmount)
+select '" + PatientPackageUID + "' PatientPackageUID
+,(select top 1 BSMDDUID from BillableItem where BillableItem.UID = BillableItemUID)BSMDDUID 
+,BillableItemUID BillableItemUID,Comments ItemName,isnull((select top 1 BillPackageItem.Amount from BillPackage,BillPackageItem where BillPackage.UID = BillPackageItem.BillPackageUID 
+ and BillPackage.UID = BillPackageUID and BillPackageItem.BillableItemUID = BillableItemUID and BillPackageItem.ActiveFrom <= getdate() and (BillPackageItem.ActiveTo is null or BillPackageItem.ActiveTo >= getdate() )
+ and BillPackage.StatusFlag = 'A' ),0) Amount,null PatientBillUID,1 CUser,getdate() CWhen,1 MUser,getdate() MWhen,'A' StatusFlag,'" + Owner + "' OwnerOrganisationUID,null Discount,isnull((select top 1 BillPackageItem.Quantity from BillPackage,BillPackageItem where BillPackage.UID = BillPackageItem.BillPackageUID 
+ and BillPackage.UID = BillPackageUID and BillPackageItem.BillableItemUID = BillableItemUID and BillPackageItem.ActiveFrom <= getdate() and (BillPackageItem.ActiveTo is null or BillPackageItem.ActiveTo >= getdate() )
+ and BillPackage.StatusFlag = 'A' ),0) ItemMultiplier,0 ActualAmount from BillPackageItem where BillPackageItem.BillPackageUID = isnull((select top 1 PatientPackage.BillPackageUID from PatientPackage where PatientPackage.UID '" + PatientPackageUID + "'),0)

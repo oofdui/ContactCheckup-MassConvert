@@ -1,0 +1,10 @@
+select StatusFlag, * from PatientVisit where PatientUID = 14887 order by UID desc -- 181173
+select * from PatientPackage where PatientVisitUID = 181199
+select * from PatientPackageItem where PatientPackageUID = 2138
+select * from patientvisitid where patientvisituid = 181199
+select * from patientorder where PatientVisitUID =181199
+select * from PatientOrderDetail where PatientOrderUID in (select uid from patientorder where PatientVisitUID =181199)
+select * from PatientBillableItem where patientvisituid = 181199
+select requestnumber, * from request where patientvisituid = 181199
+select RequestItemName, * from RequestDetail where requestuid in (select uid from request where patientvisituid = 181199)
+select * from RequestDetailSpecimen where RequestDetailUID in (select uid from RequestDetail where requestuid in (select uid from request where patientvisituid = 181199))

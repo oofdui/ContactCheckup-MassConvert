@@ -1,0 +1,14 @@
+update PatientVisit set StatusFlag = 'D' where UID = 181095
+update PatientPackage set StatusFlag = 'D' where PatientVisitUID = 181095
+update PatientPackageItem Set StatusFlag = 'D' where PatientPackageUID in ( select UID from PatientPackage where PatientVisitUID = 181095)
+update patientorder set StatusFlag = 'D' where PatientVisitUID = 181095
+update PatientOrderDetail set StatusFlag = 'D' where patientorderuid in (select UID from patientorder where PatientVisitUID = 181095)
+update PatientBillableItem set StatusFlag = 'D' where PatientVisitUID =181095
+update request set statusflag = 'D' where patientvisituid = 181095
+update RequestDetail set StatusFlag = 'D' where RequestUID in ( select uid from request where PatientVisitUID = 181095)
+update RequestDetailSpecimen set StatusFlag = 'D' where RequestDetailUID 
+in (select UId from RequestDetail where RequestUID in (select uid from request where PatientVisitUID = 181095))
+update PatientScheduleOrder set StatusFlag = 'D' where Patientvisituid =181095
+update PatientScheduleOrderDetail set StatusFlag = 'D' where PatientScheduleOrderUID in (select uid from PatientScheduleOrder where patientvisituid = 181095)
+delete BDMSASTMassConvert where PatientScheduleOrderUID in (select uid from PatientScheduleOrder where PatientVisitUID = 181095)
+delete BDMSASTMassSpecimenTestSet where PatientScheduleOrderUID in (select uid from PatientScheduleOrder where PatientVisitUID = 181095)
