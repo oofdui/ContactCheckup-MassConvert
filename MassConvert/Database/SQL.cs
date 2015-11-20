@@ -9,10 +9,12 @@ namespace MassConvert.Database
 {
     class SQL
     {
+        clsTempData clsTempData = new clsTempData();
+        string outMessage = "";
         SqlConnection con;
         //string path = @"Data Source=10.103.13.40;Initial Catalog=BNH-BConnect;User ID=osa;Password=osa";
          //string path = @"Data Source=ASTROBOY;Initial Catalog=Bconnecttest;User ID=sa;Password=njp9126";
-        private string path=@"Data Source=10.121.13.40;Initial Catalog=BRH_Bconnect;User ID=reports;Password=reports";
+        private string path=System.Configuration.ConfigurationManager.AppSettings["csBConnect"];
         public string Path
         {
             get { return path; }
@@ -4514,8 +4516,9 @@ Select SCOPE_IDENTITY() AS [SCOPE]";
             }
             return visitUID;
         }
- public void Insert_PatientVisitID(string Identifier, string mainIdentifier, string patientVisitUID, string user, string ownerOraganisationUID)
+        public bool Insert_PatientVisitID(string Identifier, string mainIdentifier, string patientVisitUID, string user, string ownerOraganisationUID)
         {
+            var result = false;
             try
             {
                 this.Connect();
@@ -4555,16 +4558,18 @@ Select SCOPE_IDENTITY() AS [SCOPE]";
                 com.Parameters.AddWithValue("@OwnerOrganisationUID", ownerOraganisationUID);
 
                 com.ExecuteNonQuery();
+                result = true;
             }
             catch (Exception ex)
             {
-
+                result = false;
                 MessageBox.Show(ex.Message);
             }
             finally
             {
                 this.Disconnect();
             }
+            return result;
         }
  public bool Insert_BDMSASTMassConvert(string PatientScheduleOrderUID, string PatientScheduleOrderNo, string LabNo
      , string IsConvertSuccess, string statusflag, string SpecimenCount, string hn, string patientuid, string patfull, string SpecimenItemList,string TestSetList)

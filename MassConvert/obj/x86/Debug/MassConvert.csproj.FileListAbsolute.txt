@@ -289,3 +289,4 @@ C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup
 C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.MDIMassConvert.resources
 C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.Properties.Resources.resources
 C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.csproj.GenerateResource.Cache
+C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.ConvertResult.resources

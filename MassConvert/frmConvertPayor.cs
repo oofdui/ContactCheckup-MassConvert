@@ -21,6 +21,11 @@ namespace MassConvert
 {
     public partial class frmConvertPayor : Telerik.WinControls.UI.RadForm
     {
+        #region GlobalVariable
+        int countSuccess = 0;
+        int countExist = 0;
+        int countFail = 0;
+        #endregion
         public frmConvertPayor()
         {
             InitializeComponent();
@@ -50,12 +55,16 @@ namespace MassConvert
         private void btFind_Click(object sender, EventArgs e)
         {
             ExcData exc = new ExcData();
+            gvPatient.Rows.Clear();
 
             string DateFrom = dtpDateFrom.Value.ToString("yyyy-MM-dd") + " " + dtpTimeFrom.Value.ToString("HH:mm");
             string DateTo = dtpDateTo.Value.ToString("yyyy-MM-dd") + " " + dtpTimeTo.Value.ToString("HH:mm");
             string SQL = string.Empty;
+            var strSQL = "";
+            var clsSQL = new clsSQLNative();
+            var clsTempData = new clsTempData();
 
-            SQL = "SELECT Forename as Name , Surname as LastName , DOE , [NO] , [ChildCompany],[STS],[SyncWhen] FROM [tblPatientList] WHERE DOE BETWEEN '" + DateFrom + "' AND '" + DateTo + "' ";
+            SQL = "SELECT [NO] ,HN,Forename as Name , Surname as LastName , DOE , [ChildCompany],[STS],[SyncWhen],'0' IsConvertPreOrder FROM [tblPatientList] WHERE DOE BETWEEN '" + DateFrom + "' AND '" + DateTo + "' ";
             if (rbAll.Checked)
             {
                 SQL += "AND STS in ('A','R') ";
@@ -68,23 +77,48 @@ namespace MassConvert
             {
                 SQL += "AND STS='R' ";
             }
-            SQL += "ORDER BY STS DESC , NO";
+            SQL += "ORDER BY SyncWhen,NO";
 
-            dtPatient = exc.data_Table(SQL);
+            dtPatient = clsSQL.Bind(SQL, clsSQLNative.DBType.SQLServer, "MobieConnect");
+            clsTempData.dtIsConverted = null;
             if(dtPatient!=null && dtPatient.Rows.Count > 0)
             {
+                try
+                {
+                    ddlIsConverted.SelectedIndex = 0;
+                }
+                catch (Exception) { }
+                #region Check IsConvertPreOrder
+                for(int i = 0; i < dtPatient.Rows.Count; i++)
+                {
+                    if (clsTempData.IsConverted(
+                        dtPatient.Rows[i]["Name"].ToString(), 
+                        dtPatient.Rows[i]["LastName"].ToString(), 
+                        dtPatient.Rows[i]["DOE"].ToString(),
+                        DateFrom,DateTo))
+                    {
+                        dtPatient.Rows[i]["IsConvertPreOrder"] = "1";
+                    }
+                }
+                dtPatient.AcceptChanges();
+                #endregion
                 bs.DataSource = dtPatient;
                 gvPatient.DataSource = bs;
 
+                gvPatient.Columns["No"].Width = 20;
+                gvPatient.Columns["HN"].Width = 100;
                 gvPatient.Columns["Name"].Width = 100;
                 gvPatient.Columns["LastName"].Width = 100;
                 gvPatient.Columns["DOE"].Width = 130;
                 gvPatient.Columns["NO"].Width = 40;
                 gvPatient.Columns["ChildCompany"].Width = 170;
                 gvPatient.Columns["STS"].Width = 40;
+                gvPatient.Columns["SyncWhen"].Width = 130;
+                gvPatient.Columns["IsConvertPreOrder"].IsVisible = false;
                 gvPatient.Refresh();
 
                 lblCountPT.Text = dtPatient.Rows.Count.ToString() + " Record.";
+                lblIsConvertCount.Text = dtPatient.Rows.Count.ToString();
 
                 CheckAll();
             }
@@ -104,7 +138,10 @@ namespace MassConvert
             {
                 if (Convert.ToBoolean(row.Cells["Check"].Value) == false)
                 {
-                    row.Cells["Check"].Value = true;
+                    if (row.IsVisible == true)
+                    {
+                        row.Cells["Check"].Value = true;
+                    }
                 }
             }
         }
@@ -337,21 +374,68 @@ namespace MassConvert
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
             string careUID = "2283";
+            var outMessage = "";
+            var clsTempData = new clsTempData();
 
             //หาข้อมูลใน tb PatientScheduleOrder ของ OrderNumber ที่ถูกส่งมา
             DataTable Schdt = db.Select_PatientScheduleOrder(OrderNo);
             if (Schdt != null && Schdt.Rows.Count > 0)
             {
+                if (!clsTempData.setConvertResult(out outMessage,
+                        "",
+                        "",
+                        "Select_PatientScheduleOrder",
+                        "Success",
+                        "OrderNo:"+OrderNo))
+                {
+                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 for (int x = 0; x < Schdt.Rows.Count; x++)
                 {
+                    var outMessage2 = "";
                     //เช็คว่ามีการ Convert แล้วหรือยัง
                     if (string.IsNullOrEmpty(Schdt.Rows[x]["PatientVisitUID"].ToString()) || Schdt.Rows[x]["PatientVisitUID"].ToString() == "0")
                     {
+                        #region setConvertResult
+                        if (!clsTempData.setConvertResult(out outMessage2,
+                            "",
+                            "",
+                            "เช็คว่ามีการ Convert แล้วหรือยัง",
+                            "No",
+                            "PatientVisitUID:" + Schdt.Rows[x]["PatientVisitUID"].ToString()))
+                        {
+                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        #endregion
                         //Update Booking ของคนไข้คนนี้ให้ Status Flag = 'U' (แสดงว่าคนไข้ได้มาตามนัด หรือ ได้ตรวจแล้ว)
-                        string outMessage = "";
                         if (db.Update_Booking_Status(Schdt.Rows[x]["PatientUID"].ToString(), Schdt.Rows[x]["ScheduledDttm"].ToString(),out outMessage) == false)
                         {
+                            #region setConvertResult
+                            if (!clsTempData.setConvertResult(out outMessage2,
+                                "",
+                                "",
+                                "Update Booking ของคนไข้คนนี้ให้ Status Flag = 'U' (แสดงว่าคนไข้ได้มาตามนัด หรือ ได้ตรวจแล้ว)",
+                                "Fail",
+                                ""))
+                            {
+                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            #endregion
                             MessageBox.Show("Cannot update booking status\n\n"+outMessage);
+                        }
+                        else
+                        {
+                            #region setConvertResult
+                            if (!clsTempData.setConvertResult(out outMessage2,
+                                "",
+                                "",
+                                "Update Booking ของคนไข้คนนี้ให้ Status Flag = 'U' (แสดงว่าคนไข้ได้มาตามนัด หรือ ได้ตรวจแล้ว)",
+                                "Success",
+                                ""))
+                            {
+                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            #endregion
                         }
 
                         //หา BillPackageItem ทั้งหมดของคนไข้คนนี้
@@ -361,7 +445,17 @@ namespace MassConvert
 
                         if (SchDetdt != null && SchDetdt.Rows.Count > 0)
                         {
-
+                            #region setConvertResult
+                            if (!clsTempData.setConvertResult(out outMessage2,
+                                "",
+                                "",
+                                "หา BillPackageItem ทั้งหมดของคนไข้คนนี้",
+                                "Found",
+                                "UID:"+ Schdt.Rows[x]["UID"].ToString()))
+                            {
+                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            #endregion
                             //หา BillableItem ของ Order ของคนไข้คนนี้ตาม BSMDD
                             DataTable bsmdt = db.Select_BillableItem_By_ScheduleOrderNumber_GroupBy_BSMDDUID(Schdt.Rows[x]["UID"].ToString()); //new check by BSMDDUID
                             //หา Order Category ของ Order ของคนไข้คนนี้
@@ -370,6 +464,17 @@ namespace MassConvert
 
                             if (bsmdt != null && bsmdt.Rows.Count > 0)
                             {
+                                #region setConvertResult
+                                if (!clsTempData.setConvertResult(out outMessage2,
+                                    "",
+                                    "",
+                                    "หา BillableItem ของ Order ของคนไข้คนนี้ตาม BSMDD",
+                                    "Found",
+                                    "UID:" + Schdt.Rows[x]["UID"].ToString()))
+                                {
+                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                #endregion
                                 //หาว่า Billable Type นี้มี Medicin , Supply อยู่ด้วยหรือไม่
                                 //if (CheckBillableMedicineItemTypeInsidePackage(bsmdt) == true) //New concept check by BSMDDUID
                                 //{
@@ -390,9 +495,47 @@ namespace MassConvert
                                 string patvisituid = db.Insert_PatientVisit(Schdt.Rows[x]["PatientUID"].ToString(), Encounter_UID
                                    , careUID, "0", Location_UID, "0", OwnerOrganization, "mass convert", Cuser
                                    , OwnerOrganization, "0");
-
+                                #region setConvertResult
+                                if (!clsTempData.setConvertResult(out outMessage2,
+                                    "",
+                                    "",
+                                    "Insert ข้อมูลเข้า table PatientVisit แล้ว return ค่า PatientVisitUID ออกมา",
+                                    "Success",
+                                    "PatientVisitUID:" + patvisituid))
+                                {
+                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                #endregion
                                 //Update PatientVisitUID ใน table PatientScheduleOrder ให้เป็น PatientVisitUID จริง ๆ
-                                db.Update_PatientScheduleOrder_By_UID(Schdt.Rows[x]["UID"].ToString(), patvisituid, Cuser);
+                                if(db.Update_PatientScheduleOrder_By_UID(Schdt.Rows[x]["UID"].ToString(), patvisituid, Cuser))
+                                {
+                                    #region setConvertResult
+                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                        "",
+                                        "",
+                                        "Update PatientVisitUID ใน table PatientScheduleOrder ให้เป็น PatientVisitUID จริง ๆ",
+                                        "Success",
+                                        "PatientVisitUID:" + patvisituid))
+                                    {
+                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    #endregion
+                                }
+                                else
+                                {
+                                    #region setConvertResult
+                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                        "",
+                                        "",
+                                        "Update PatientVisitUID ใน table PatientScheduleOrder ให้เป็น PatientVisitUID จริง ๆ",
+                                        "Fail",
+                                        "PatientVisitUID:" + patvisituid))
+                                    {
+                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    #endregion
+                                }
+                                countSuccess += 1;
 
                                 //Insert ข้อมูลเข้า table PatientVisitPayor แล้ว return ค่า PatientVisitPayorUID ออกมา
                                 //string patientVisitPayorUID = db.Insert_PatientVisitPayor(patvisituid, Schdt.Rows[x]["PatientUID"].ToString()
@@ -403,9 +546,47 @@ namespace MassConvert
                                     , cboPayorOffice.SelectedItem.Value.ToString(), cboPolicy.SelectedItem.Value.ToString(),
                                 cboPolicy.SelectedItem.Text.ToString(), "", "MassCovert", Cuser, "A", OwnerOrganization, cboPayor.SelectedItem.Value.ToString(),
                                 cboAgreement.SelectedItem.Value.ToString(), "", "", FindAgreementPercentTag(cboAgreement.SelectedItem.Value.ToString()), "0");
-
+                                #region setConvertResult
+                                if (!clsTempData.setConvertResult(out outMessage2,
+                                    "",
+                                    "",
+                                    "Insert ข้อมูลเข้า table PatientVisitPayor แล้ว return ค่า PatientVisitPayorUID ออกมา",
+                                    "Success",
+                                    "PatientVisitPayorUID:" + patientVisitPayorUID))
+                                {
+                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                #endregion
                                 //Insert ข้อมูลเข้า table PatientVisiID
-                                db.Insert_PatientVisitID(visitno, "Y", patvisituid, Cuser, OwnerOrganization);
+                                if(db.Insert_PatientVisitID(visitno, "Y", patvisituid, Cuser, OwnerOrganization))
+                                {
+                                    #region setConvertResult
+                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                        "",
+                                        "",
+                                        "Insert ข้อมูลเข้า table PatientVisiID",
+                                        "Success",
+                                        "PatientVisitUID:" + patvisituid))
+                                    {
+                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    #endregion
+                                }
+                                else
+                                {
+                                    #region setConvertResult
+                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                        "",
+                                        "",
+                                        "Insert ข้อมูลเข้า table PatientVisiID",
+                                        "Fail",
+                                        "PatientVisitUID:" + patvisituid))
+                                    {
+                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    #endregion
+                                }
+                                countSuccess += 1;
 
                                 //==============================================
                                 //INSERT PATIENT PACKAGE & PACKAGE ITEM SECTION. 
@@ -415,26 +596,142 @@ namespace MassConvert
                                 DataTable dtBDMSScheduleOrder = db.Select_BDMSPatientScheduleOrderDetail_By_ScheduleOrderUID(Schdt.Rows[x]["UID"].ToString());
                                 if (dtBDMSScheduleOrder != null && dtBDMSScheduleOrder.Rows.Count > 0)
                                 {
+                                    #region setConvertResult
+                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                        "",
+                                        "",
+                                        "หา Package ย่อย ของ ScheduleOrderNumber นี้",
+                                        "Found",
+                                        ""))
+                                    {
+                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    #endregion
                                     for (int m = 0; m < dtBDMSScheduleOrder.Rows.Count; m++)
                                     {
                                         //Insert ข้อมูลเข้า table PatientPackage ตาม ScheduleOrderNumber ที่ส่งเข้ามา  แล้ว return ค่า PackageUID ออกมา
                                         packuid = db.Insert_PatientPackage_by_ScheduleOrderNumber(Schdt.Rows[x]["UID"].ToString(), OwnerOrganization, dtBDMSScheduleOrder.Rows[m]["BillPackageUID"].ToString(), patvisituid);
-
+                                        #region setConvertResult
+                                        if (!clsTempData.setConvertResult(out outMessage2,
+                                            "",
+                                            "",
+                                            "Insert ข้อมูลเข้า table PatientPackage ตาม ScheduleOrderNumber ที่ส่งเข้ามา  แล้ว return ค่า PackageUID ออกมา",
+                                            "Success",
+                                            "PackageUID:"+ packuid))
+                                        {
+                                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+                                        #endregion
                                         //Insert ข้อมูลเข้า table PatientPackageItem
-                                        db.Insert_PatientPackageItem_by_ScheduleOrderNumber_BillPackage("", packuid, OwnerOrganization);
+                                        if(db.Insert_PatientPackageItem_by_ScheduleOrderNumber_BillPackage("", packuid, OwnerOrganization))
+                                        {
+                                            #region setConvertResult
+                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                "",
+                                                "",
+                                                "Insert ข้อมูลเข้า table PatientPackageItem",
+                                                "Success",
+                                                "PackageUID:" + packuid))
+                                            {
+                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                            }
+                                            #endregion
+                                        }
+                                        else
+                                        {
+                                            #region setConvertResult
+                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                "",
+                                                "",
+                                                "Insert ข้อมูลเข้า table PatientPackageItem",
+                                                "Fail",
+                                                "PackageUID:" + packuid))
+                                            {
+                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                            }
+                                            #endregion
+                                        }
+                                        countSuccess += 1;
                                     }
+                                }
+                                else
+                                {
+                                    #region setConvertResult
+                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                        "",
+                                        "",
+                                        "หา Package ย่อย ของ ScheduleOrderNumber นี้",
+                                        "Not Found",
+                                        ""))
+                                    {
+                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    #endregion
                                 }
                                 //วนลูป add หัว package ทั้ง program หลัก และ Option เข้า table PatientBillableItem
                                 DataTable dtPktBdmsSch = db.Select_PatientPackage_By_VisitUID(patvisituid);
                                 if (dtPktBdmsSch != null && dtPktBdmsSch.Rows.Count > 0)
                                 {
+                                    #region setConvertResult
+                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                        "",
+                                        "",
+                                        "วนลูป add หัว package ทั้ง program หลัก และ Option เข้า table PatientBillableItem",
+                                        "Found",
+                                        "PatientVisitUID:" + patvisituid))
+                                    {
+                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    #endregion
                                     for (int n = 0; n < dtPktBdmsSch.Rows.Count; n++)
                                     {
                                         //INSERT PATIENT BILLABLE FOR BILL PACKAGE IDENTIFIER TYPE
 
                                         //Insert ข้อมูลเข้า table PatientBillableItem 
-                                        db.Insert_PatientBillableItem_For_PackageHeader(OrderNo, dtPktBdmsSch.Rows[n]["UID"].ToString(), OwnerOrganization, Cuser, patvisituid, Schdt.Rows[x]["PatientUID"].ToString(), dtPktBdmsSch.Rows[n]["BillPackageUID"].ToString());
+                                        if(db.Insert_PatientBillableItem_For_PackageHeader(OrderNo, dtPktBdmsSch.Rows[n]["UID"].ToString(), OwnerOrganization, Cuser, patvisituid, Schdt.Rows[x]["PatientUID"].ToString(), dtPktBdmsSch.Rows[n]["BillPackageUID"].ToString()))
+                                        {
+                                            #region setConvertResult
+                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                "",
+                                                "",
+                                                "Insert ข้อมูลเข้า table PatientBillableItem",
+                                                "Success",
+                                                ""))
+                                            {
+                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                            }
+                                            #endregion
+                                        }
+                                        else
+                                        {
+                                            #region setConvertResult
+                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                "",
+                                                "",
+                                                "Insert ข้อมูลเข้า table PatientBillableItem",
+                                                "Fail",
+                                                ""))
+                                            {
+                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                            }
+                                            #endregion
+                                        }
+                                        countSuccess += 1;
                                     }
+                                }
+                                else
+                                {
+                                    #region setConvertResult
+                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                        "",
+                                        "",
+                                        "วนลูป add หัว package ทั้ง program หลัก และ Option เข้า table PatientBillableItem",
+                                        "Not Found",
+                                        "PatientVisitUID:" + patvisituid))
+                                    {
+                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    #endregion
                                 }
                                 //วนลูปตาม Order Category
                                 for (int i = 0; i < catdt.Rows.Count; i++)
@@ -479,6 +776,35 @@ namespace MassConvert
                                                , patvisituid, Cuser, "mass convert"
                                                , SchDetdt.Rows[j]["ORDCTUID"].ToString()
                                                , Identype, Location_UID, ordtoval, OwnerOrganization, out patorderuid);
+                                            if (flaginsertPatientOrder)
+                                            {
+                                                #region setConvertResult
+                                                if (!clsTempData.setConvertResult(out outMessage2,
+                                                    "",
+                                                    "",
+                                                    "Insert ข้อมูลเข้า table PatientOrder แล้ว return PatientOrderUID ออกมา",
+                                                    "Success",
+                                                    "PatientOrderUID:"+ patorderuid))
+                                                {
+                                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                }
+                                                #endregion
+                                            }
+                                            else
+                                            {
+                                                #region setConvertResult
+                                                if (!clsTempData.setConvertResult(out outMessage2,
+                                                    "",
+                                                    "",
+                                                    "Insert ข้อมูลเข้า table PatientOrder แล้ว return PatientOrderUID ออกมา",
+                                                    "Fail",
+                                                    "PatientOrderUID:" + patorderuid))
+                                                {
+                                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                }
+                                                #endregion
+                                            }
+                                            countSuccess += 1;
 
                                             //หา PatientPackageUID ของ Order และ Visit นี้
                                             DataTable dtPTPck = db.Select_PatientPackageUID_By_BillPackageItemUID(patvisituid, SchDetdt.Rows[j]["UID"].ToString());
@@ -539,8 +865,33 @@ namespace MassConvert
                                                         DataTable mssdt = db.Select_BDMSASTMassConvert_Between(OrderNo, OrderNo);
                                                         if (mssdt != null && mssdt.Rows.Count > 0)
                                                         {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "เช็คว่ามีการ Generate LabNo โดยโปรแกรม Pre GenLab แล้วหรือยัง",
+                                                                "Yes",
+                                                                "LabNo:"+ SpecialSEQ))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
                                                             //ถ้ามีแล้วให้ดึง LabNo ที่ถูก Generate แล้วมา  เพื่อที่จะได้ไม่ต้อง Genrate LabNo ใหม่
                                                             SpecialSEQ = mssdt.Rows[0]["LabNo"].ToString();
+                                                        }
+                                                        else
+                                                        {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "เช็คว่ามีการ Generate LabNo โดยโปรแกรม Pre GenLab แล้วหรือยัง",
+                                                                "No",
+                                                                "LabNo:" + SpecialSEQ))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
                                                         }
                                                         //นำ Lab No ที่ Generate มาแล้วไปเช็คใน table request ว่ามีแล้วหรือยัง
                                                         DataTable labnodt = db.Select_Request_By_LabNo(SpecialSEQ);
@@ -548,27 +899,80 @@ namespace MassConvert
                                                         {
                                                             //ถ้ามีแล้วให้คืนค่า RequestUID กลับมา
                                                             requid = labnodt.Rows[0]["UID"].ToString();
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "นำ Lab No ที่ Generate มาแล้วไปเช็คใน table request ว่ามีแล้วหรือยัง",
+                                                                "Yes",
+                                                                "RequestUID:" + requid))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
                                                         }
                                                         else //not found lab no in database
                                                         {
                                                             //ถ้ายังไม่มี ให้ทำการ Insert ข้อมูลใหม่เข้าไปใน table request แล้ว return RequestUID ออกมา
-                                                            requid = db.Insert_Request(patvisituid
-                                                           , Schdt.Rows[x]["PatientUID"].ToString(), Cuser, SpecialSEQ, "Specimen Collected"
-                                                                        , Location_UID, ordtoval, OwnerOrganization);
+                                                            requid = db.Insert_Request(patvisituid,Schdt.Rows[x]["PatientUID"].ToString(),Cuser,SpecialSEQ,"Specimen Collected"
+                                                                        ,Location_UID, ordtoval, OwnerOrganization);
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "นำ Lab No ที่ Generate มาแล้วไปเช็คใน table request ว่ามีแล้วหรือยัง",
+                                                                "No",
+                                                                "RequestUID:" + requid+ " (ทำการ Insert ข้อมูลใหม่เข้าไปใน table request แล้ว return RequestUID ออกมา)"))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
                                                         }
                                                         // Update table PatientOrder 
                                                         db.Update_PatientOrder_By_UID(patorderuid, requid);
-
+                                                        #region setConvertResult
+                                                        if (!clsTempData.setConvertResult(out outMessage2,
+                                                            "",
+                                                            "",
+                                                            "Update table PatientOrder",
+                                                            "Success",
+                                                            "PatientOrderUID:" + patorderuid))
+                                                        {
+                                                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                        }
+                                                        #endregion
                                                         //Insert ข้อมูลเข้า table RequestDetail แล้ว return UID กลับมา
                                                         string retreqdet = db.Insert_RequestDetail(SchDetdt.Rows[j]["ItemUID"].ToString(),
                                                                     requid, Cuser, SchDetdt.Rows[j]["Comments"].ToString(), "Specimen Collected", OwnerOrganization);
                                                         //ถ้า Insert สำเร็จ
                                                         if (retreqdet != "")
                                                         {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "Insert ข้อมูลเข้า table RequestDetail แล้ว return UID กลับมา",
+                                                                "Success",
+                                                                "RequestDetailUID:" + retreqdet))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
                                                             //หาข้อมูลว่ามีการ PreOrder แล้วหรือยัง
                                                             DataTable pschdt = db.Select_PatientScheduleOrder(OrderNo);
                                                             if (pschdt != null && pschdt.Rows.Count > 0)
                                                             {
+                                                                #region setConvertResult
+                                                                if (!clsTempData.setConvertResult(out outMessage2,
+                                                                    "",
+                                                                    "",
+                                                                    "หาข้อมูลว่ามีการ PreOrder แล้วหรือยัง",
+                                                                    "Yes",
+                                                                    "OrderNo:" + OrderNo))
+                                                                {
+                                                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                }
+                                                                #endregion
                                                                 //เช็ค Specimen ที่เราได้ทำตอน Generate LabNo
                                                                 DataTable bspctsdt = db.Select_BDMSASTMAssSpecimenTestset_BY_PatientScheduleOrderUID_And_TestSet_HN(
                                                                               pschdt.Rows[0]["UID"].ToString(), SchDetdt.Rows[j]["RequestCode"].ToString()
@@ -576,20 +980,68 @@ namespace MassConvert
                                                                 //ถ้ามี Specimen ตอน Generate LabNo แล้ว
                                                                 if (bspctsdt != null && bspctsdt.Rows.Count > 0)
                                                                 {
+                                                                    #region setConvertResult
+                                                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                                                        "",
+                                                                        "",
+                                                                        "เช็ค Specimen ที่เราได้ทำตอน Generate LabNo",
+                                                                        "Found",
+                                                                        ""))
+                                                                    {
+                                                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                    }
+                                                                    #endregion
                                                                     //เข้าไปดึง specimen ใน table master specimen โดยดึงตาม Code ที่กำหนด
                                                                     DataTable spdt = db.Select_Specimen_By_Name(bspctsdt.Rows[0]["Specimen"].ToString());
                                                                     if (spdt != null && spdt.Rows.Count > 0)
                                                                     {
                                                                         //Insert ข้อมูล Specimen เข้า table RequestDetailSpecimen
-                                                                        db.Insert_RequestDetailSpecimen(retreqdet, "NULL", "'Manual Entry'"
+                                                                        if(db.Insert_RequestDetailSpecimen(retreqdet, "NULL", "'Manual Entry'"
                                                                                 , spdt.Rows[0]["UID"].ToString(), spdt.Rows[0]["Name"].ToString(), "0", "0"
                                                                                 , "3", "0", "NULL", "0", "0", Cuser, "'Mass Convert'", Cuser
-                                                                                , OwnerOrganization, "NULL", "NULL", "Specimen Collected", "''", "NULL", "NULL");
+                                                                                , OwnerOrganization, "NULL", "NULL", "Specimen Collected", "''", "NULL", "NULL"))
+                                                                        {
+                                                                            #region setConvertResult
+                                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                                "",
+                                                                                "",
+                                                                                "Insert ข้อมูล Specimen เข้า table RequestDetailSpecimen",
+                                                                                "Success",
+                                                                                ""))
+                                                                            {
+                                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                            }
+                                                                            #endregion
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            #region setConvertResult
+                                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                                "",
+                                                                                "",
+                                                                                "Insert ข้อมูล Specimen เข้า table RequestDetailSpecimen",
+                                                                                "Fail",
+                                                                                ""))
+                                                                            {
+                                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                            }
+                                                                            #endregion
+                                                                        }
                                                                     }
-
                                                                 }
                                                                 else
                                                                 {
+                                                                    #region setConvertResult
+                                                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                                                        "",
+                                                                        "",
+                                                                        "เช็ค Specimen ที่เราได้ทำตอน Generate LabNo",
+                                                                        "Not Found",
+                                                                        ""))
+                                                                    {
+                                                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                    }
+                                                                    #endregion
                                                                     //RequestItemUID = SchDetdt.Rows[j]["ItemUID"].ToString()
                                                                     //LabCode = SchDetdt.Rows[j]["RequestCode"].ToString()
 
@@ -611,15 +1063,80 @@ namespace MassConvert
                                                                     DataTable spMasterdt = db.Select_Specimen_By_Name(spedt.Rows[0]["SpecimenCode"].ToString());
                                                                     if (spMasterdt != null && spMasterdt.Rows.Count > 0)
                                                                     {
+                                                                        #region setConvertResult
+                                                                        if (!clsTempData.setConvertResult(out outMessage2,
+                                                                            "",
+                                                                            "",
+                                                                            "เข้าไปดึง specimen ใน table master specimen โดยดึงตาม Code ที่กำหนด",
+                                                                            "Found",
+                                                                            ""))
+                                                                        {
+                                                                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                        }
+                                                                        #endregion
                                                                         //Insert ข้อมูล Specimen เข้า table RequestDetailSpecimen
-                                                                        db.Insert_RequestDetailSpecimen(retreqdet, "NULL", "'Manual Entry'"
+                                                                        if(db.Insert_RequestDetailSpecimen(retreqdet, "NULL", "'Manual Entry'"
                                                                                 , spMasterdt.Rows[0]["UID"].ToString(), spMasterdt.Rows[0]["Name"].ToString(), "0", "0"
                                                                                 , "3", "0", "NULL", "0", "0", Cuser, "'Mass Convert'", Cuser
-                                                                                , OwnerOrganization, "NULL", "NULL", "Specimen Collected", "''", "NULL", "NULL");
+                                                                                , OwnerOrganization, "NULL", "NULL", "Specimen Collected", "''", "NULL", "NULL"))
+                                                                        {
+                                                                            #region setConvertResult
+                                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                                "",
+                                                                                "",
+                                                                                "Insert ข้อมูล Specimen เข้า table RequestDetailSpecimen",
+                                                                                "Success",
+                                                                                ""))
+                                                                            {
+                                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                            }
+                                                                            #endregion
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            #region setConvertResult
+                                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                                "",
+                                                                                "",
+                                                                                "Insert ข้อมูล Specimen เข้า table RequestDetailSpecimen",
+                                                                                "Fail",
+                                                                                ""))
+                                                                            {
+                                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                            }
+                                                                            #endregion
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        #region setConvertResult
+                                                                        if (!clsTempData.setConvertResult(out outMessage2,
+                                                                            "",
+                                                                            "",
+                                                                            "เข้าไปดึง specimen ใน table master specimen โดยดึงตาม Code ที่กำหนด",
+                                                                            "Not Found",
+                                                                            ""))
+                                                                        {
+                                                                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                        }
+                                                                        #endregion
                                                                     }
                                                                 }
                                                             }
-
+                                                            else
+                                                            {
+                                                                #region setConvertResult
+                                                                if (!clsTempData.setConvertResult(out outMessage2,
+                                                                    "",
+                                                                    "",
+                                                                    "หาข้อมูลว่ามีการ PreOrder แล้วหรือยัง",
+                                                                    "No",
+                                                                    "OrderNo:" + OrderNo))
+                                                                {
+                                                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                }
+                                                                #endregion
+                                                            }
                                                             patorddetails = db.insert_PatientOrderDetail(SEQ, retreqdet
                                                             , IdentTypeforOrderDetail, Cuser, SchDetdt.Rows[j]["BillableItemUID"].ToString(), "mass convert"
                                                             , orddetstatus, SchDetdt.Rows[j]["Quantity"].ToString()
@@ -629,19 +1146,93 @@ namespace MassConvert
                                                             , (NetAmount == "0" ? SchDetdt.Rows[j]["Amount"].ToString() : NetAmount)
                                                             , SchDetdt.Rows[j]["Amount"].ToString()
                                                             , dtPTPck.Rows[0]["PatientPackageUID"].ToString(), OwnerOrganization, patientVisitPayorUID);
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "insert_PatientOrderDetail",
+                                                                "Success",
+                                                                "PatientOrderDetailUID:"+ patorddetails))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
                                                             //Packuid
                                                         } //if (retreqdt !="")
+                                                        else
+                                                        {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "Insert ข้อมูลเข้า table RequestDetail แล้ว return UID กลับมา",
+                                                                "Fail",
+                                                                ""))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
+                                                        }
 
                                                         DataTable lsdt = db.GetRequestDetail_Status(SpecialSEQ);
                                                         if (lsdt != null && lsdt.Rows.Count > 0)
                                                         {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "GetRequestDetail_Status",
+                                                                "Found",
+                                                                "SpecialSEQ:" + SpecialSEQ))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
                                                             var cstat = CheckStatus(lsdt).Split('|');
                                                             if (cstat.Count() == 2)
                                                             {
                                                                 db.Update_Request_By_LabNumber(SpecialSEQ, cstat[0].ToString());
-
+                                                                #region setConvertResult
+                                                                if (!clsTempData.setConvertResult(out outMessage2,
+                                                                    "",
+                                                                    "",
+                                                                    "Update_Request_By_LabNumber",
+                                                                    "Success",
+                                                                    ""))
+                                                                {
+                                                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                }
+                                                                #endregion
+                                                            }
+                                                            else
+                                                            {
+                                                                #region setConvertResult
+                                                                if (!clsTempData.setConvertResult(out outMessage2,
+                                                                    "",
+                                                                    "",
+                                                                    "Update_Request_By_LabNumber",
+                                                                    "Fail",
+                                                                    ""))
+                                                                {
+                                                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                                }
+                                                                #endregion
                                                             }
                                                         }// if (lsdt != null && lsdt.Rows.Count > 0)
+                                                        else
+                                                        {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "GetRequestDetail_Status",
+                                                                "Not Found",
+                                                                "SpecialSEQ:" + SpecialSEQ))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
+                                                        }
 
 
 
@@ -655,31 +1246,84 @@ namespace MassConvert
                                                         requid = db.Insert_Request(patvisituid
                                                           , Schdt.Rows[x]["PatientUID"].ToString(), Cuser, SpecialSEQ, "Executed"
                                                           , Location_UID, ordtoval, OwnerOrganization);
+                                                        #region setConvertResult
+                                                        if (!clsTempData.setConvertResult(out outMessage2,
+                                                            "",
+                                                            "",
+                                                            "Insert_Request",
+                                                            "Success",
+                                                            "requid:"+ requid))
+                                                        {
+                                                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                        }
+                                                        #endregion
 
                                                         db.Update_PatientOrder_By_UID(patorderuid, requid);
+                                                        #region setConvertResult
+                                                        if (!clsTempData.setConvertResult(out outMessage2,
+                                                            "",
+                                                            "",
+                                                            "Update_PatientOrder_By_UID",
+                                                            "Success",
+                                                            "PatientOrderUID:" + patorderuid))
+                                                        {
+                                                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                        }
+                                                        #endregion
 
                                                         string retreqdet = db.Insert_RequestDetail(SchDetdt.Rows[j]["itemUID"].ToString(),
                                                                requid, Cuser, SchDetdt.Rows[j]["Comments"].ToString(), "Executed", OwnerOrganization);
                                                         if (retreqdet != "")
                                                         {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "Insert_RequestDetail",
+                                                                "Success",
+                                                                "retreqdet:" + retreqdet))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
                                                             patorddetails = db.insert_PatientOrderDetail(SEQ, retreqdet
-                                                       , IdentTypeforOrderDetail, Cuser, SchDetdt.Rows[j]["BillableItemUID"].ToString(), "mass convert"
-                                                       , orddetstatus, SchDetdt.Rows[j]["Quantity"].ToString()
-                                                       , SchDetdt.Rows[j]["OrderSubCategoryUID"].ToString()
-                                                       , SchDetdt.Rows[j]["ORDCTUID"].ToString()
-                                                       , SchDetdt.Rows[j]["Amount"].ToString()
-                                                       , (NetAmount == "0" ? SchDetdt.Rows[j]["Amount"].ToString() : NetAmount)
-                                                       , SchDetdt.Rows[j]["Amount"].ToString()
-                                                       , dtPTPck.Rows[0]["PatientPackageUID"].ToString(), OwnerOrganization, patientVisitPayorUID);
+                                                               , IdentTypeforOrderDetail, Cuser, SchDetdt.Rows[j]["BillableItemUID"].ToString(), "mass convert"
+                                                               , orddetstatus, SchDetdt.Rows[j]["Quantity"].ToString()
+                                                               , SchDetdt.Rows[j]["OrderSubCategoryUID"].ToString()
+                                                               , SchDetdt.Rows[j]["ORDCTUID"].ToString()
+                                                               , SchDetdt.Rows[j]["Amount"].ToString()
+                                                               , (NetAmount == "0" ? SchDetdt.Rows[j]["Amount"].ToString() : NetAmount)
+                                                               , SchDetdt.Rows[j]["Amount"].ToString()
+                                                               , dtPTPck.Rows[0]["PatientPackageUID"].ToString(), OwnerOrganization, patientVisitPayorUID);
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "insert_PatientOrderDetail",
+                                                                "Success",
+                                                                "patorddetails:" + patorddetails))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
                                                             //packuid
 
                                                         }//if (retreqdet != "")
-
-
-
+                                                        else
+                                                        {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "Insert_RequestDetail",
+                                                                "Fail",
+                                                                ""))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
+                                                        }
                                                     }//if (OrderCateType.ToString().ToLower()=="xray")
-
-
                                                 }//if (Identype=="REQUEST")
                                                 else// for Identype = "ORDER"
                                                 {
@@ -692,9 +1336,19 @@ namespace MassConvert
                                                         , (NetAmount == "0" ? SchDetdt.Rows[j]["Amount"].ToString() : NetAmount)
                                                         , SchDetdt.Rows[j]["Amount"].ToString()
                                                         , dtPTPck.Rows[0]["PatientPackageUID"].ToString(), OwnerOrganization, patientVisitPayorUID);
+                                                    #region setConvertResult
+                                                    if (!clsTempData.setConvertResult(out outMessage2,
+                                                        "",
+                                                        "",
+                                                        "insert_PatientOrderDetail",
+                                                        "Success",
+                                                        "patorddetails:" + patorddetails))
+                                                    {
+                                                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                    }
+                                                    #endregion
                                                     //packuid
                                                 }//=================================================================================
-
 
                                                 //**********************************************************
                                                 //INSERT PATIENTBILLABLEITEM SECTION 
@@ -711,35 +1365,119 @@ namespace MassConvert
                                                     if (OrderCateType.ToString().ToLower() == "lab")
                                                     {
                                                         //error
-                                                        db.Insert_BillableItem(Schdt.Rows[x]["PatientUID"].ToString()
+                                                        if(db.Insert_BillableItem(Schdt.Rows[x]["PatientUID"].ToString()
                                                         , patvisituid, SchDetdt.Rows[j]["ItemUID"].ToString(), "'REQUESTITEM'", Cuser, OwnerOrganization
                                                         , SchDetdt.Rows[j]["BSMDDUID"].ToString(), SchDetdt.Rows[j]["Amount"].ToString()
                                                         , (NetAmount == "0" ? SchDetdt.Rows[j]["Amount"].ToString() : NetAmount), SchDetdt.Rows[j]["BillableItemUID"].ToString()
                                                         , SchDetdt.Rows[j]["Quantity"].ToString(), "null", "null", SchDetdt.Rows[j]["Comments"].ToString()
-                                                        , "null", "null", dtPTPck.Rows[0]["PatientPackageUID"].ToString(), "'REQUEST'", requid, patorddetails, "Specimen Collected");
+                                                        , "null", "null", dtPTPck.Rows[0]["PatientPackageUID"].ToString(), "'REQUEST'", requid, patorddetails, "Specimen Collected"))
+                                                        {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "Insert_BillableItem",
+                                                                "Success",
+                                                                ""))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
+                                                        }
+                                                        else
+                                                        {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "Insert_BillableItem",
+                                                                "Fail",
+                                                                ""))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
+                                                        }
                                                         //packuid
+                                                        countSuccess += 1;
                                                     }
                                                     else//(OrderCateType.ToString().ToLower() == "xray")
                                                     {
-                                                        db.Insert_BillableItem(Schdt.Rows[x]["PatientUID"].ToString()
+                                                        if(db.Insert_BillableItem(Schdt.Rows[x]["PatientUID"].ToString()
                                                         , patvisituid, SchDetdt.Rows[j]["ItemUID"].ToString(), "'REQUESTITEM'", Cuser, OwnerOrganization
                                                         , SchDetdt.Rows[j]["BSMDDUID"].ToString(), SchDetdt.Rows[j]["Amount"].ToString()
                                                         , (NetAmount == "0" ? SchDetdt.Rows[j]["Amount"].ToString() : NetAmount), SchDetdt.Rows[j]["BillableItemUID"].ToString()
                                                         , SchDetdt.Rows[j]["Quantity"].ToString(), "null", "null", SchDetdt.Rows[j]["Comments"].ToString()
-                                                        , "null", "null", dtPTPck.Rows[0]["PatientPackageUID"].ToString(), "'REQUEST'", requid, patorddetails, "Executed");
+                                                        , "null", "null", dtPTPck.Rows[0]["PatientPackageUID"].ToString(), "'REQUEST'", requid, patorddetails, "Executed"))
+                                                        {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "Insert_BillableItem",
+                                                                "Success",
+                                                                ""))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
+                                                        }
+                                                        else
+                                                        {
+                                                            #region setConvertResult
+                                                            if (!clsTempData.setConvertResult(out outMessage2,
+                                                                "",
+                                                                "",
+                                                                "Insert_BillableItem",
+                                                                "Fail",
+                                                                ""))
+                                                            {
+                                                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                            }
+                                                            #endregion
+                                                        }
                                                         //packuid
+                                                        countSuccess += 1;
                                                     }
                                                 }
                                                 else //ถ้าเป็น Order อื่น ๆ
                                                 {
 
-                                                    db.Insert_BillableItem(Schdt.Rows[x]["PatientUID"].ToString()
+                                                    if(db.Insert_BillableItem(Schdt.Rows[x]["PatientUID"].ToString()
                                                         , patvisituid, SchDetdt.Rows[j]["ItemUID"].ToString(), "'ORDITEM'", Cuser, OwnerOrganization
                                                         , SchDetdt.Rows[j]["BSMDDUID"].ToString(), SchDetdt.Rows[j]["Amount"].ToString()
                                                         , (NetAmount == "0" ? SchDetdt.Rows[j]["Amount"].ToString() : NetAmount), SchDetdt.Rows[j]["BillableItemUID"].ToString()
                                                         , SchDetdt.Rows[j]["Quantity"].ToString(), "null", "null", SchDetdt.Rows[j]["Comments"].ToString()
-                                                        , "null", "null", dtPTPck.Rows[0]["PatientPackageUID"].ToString(), "'PATIENTORDER'", patorderuid, patorddetails, "Raised");
+                                                        , "null", "null", dtPTPck.Rows[0]["PatientPackageUID"].ToString(), "'PATIENTORDER'", patorderuid, patorddetails, "Raised"))
+                                                    {
+                                                        #region setConvertResult
+                                                        if (!clsTempData.setConvertResult(out outMessage2,
+                                                            "",
+                                                            "",
+                                                            "Insert_BillableItem",
+                                                            "Success",
+                                                            ""))
+                                                        {
+                                                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                        }
+                                                        #endregion
+                                                    }
+                                                    else
+                                                    {
+                                                        #region setConvertResult
+                                                        if (!clsTempData.setConvertResult(out outMessage2,
+                                                            "",
+                                                            "",
+                                                            "Insert_BillableItem",
+                                                            "Fail",
+                                                            ""))
+                                                        {
+                                                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                        }
+                                                        #endregion
+                                                    }
                                                     //packuid
+                                                    countSuccess += 1;
 
 
                                                     //db.Insert_PatientBillableItem(SchDetdt.Rows[j]["UID"].ToString()
@@ -755,19 +1493,107 @@ namespace MassConvert
                                 //=================== ส่ง EN ไป update ใน table Patient ของโปรแกรม Contact Checkup
                                 string strPayor = db.Select_Payor(patvisituid);
                                 db.Update_EN_IN_ContactCheckup(Schdt.Rows[x]["ScheduleOrderNumber"].ToString(), visitno, strPayor);
+                                #region setConvertResult
+                                if (!clsTempData.setConvertResult(out outMessage2,
+                                    "",
+                                    "",
+                                    "ส่ง EN ไป update ใน table Patient ของโปรแกรม Contact Checkup",
+                                    "Success",
+                                    "ScheduleOrderNumber:"+ Schdt.Rows[x]["ScheduleOrderNumber"].ToString() + " EN:"+ visitno))
+                                {
+                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                #endregion
 
                                 //==================== Update ใน table tblPatientList ว่าคนไข้คนนี้ได้ทำการ Convert แล้ว
                                 Update_Status_In_TblPatientList(Schdt.Rows[x]["ScheduleOrderNumber"].ToString());
+                                #region setConvertResult
+                                if (!clsTempData.setConvertResult(out outMessage2,
+                                    "",
+                                    "",
+                                    "Update ใน table tblPatientList ว่าคนไข้คนนี้ได้ทำการ Convert แล้ว",
+                                    "Success",
+                                    "ScheduleOrderNumber:" + Schdt.Rows[x]["ScheduleOrderNumber"].ToString()))
+                                {
+                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                #endregion
 
                                 //========= Insert table PatientServiceEvent เพื่อให้สามารถค้นหาหน้า Patient List ได้
                                 db.Insert_PatientServiceEvent(patvisituid);
+                                #region setConvertResult
+                                if (!clsTempData.setConvertResult(out outMessage2,
+                                    "",
+                                    "",
+                                    "Insert table PatientServiceEvent เพื่อให้สามารถค้นหาหน้า Patient List ได้",
+                                    "Success",
+                                    "PatientVisitUID:" + patvisituid))
+                                {
+                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                #endregion
                             }
-                        }//  
+                            else
+                            {
+                                #region setConvertResult
+                                if (!clsTempData.setConvertResult(out outMessage2,
+                                    "",
+                                    "",
+                                    "หา BillableItem ของ Order ของคนไข้คนนี้ตาม BSMDD",
+                                    "Not Found",
+                                    "UID:" + Schdt.Rows[x]["UID"].ToString()))
+                                {
+                                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                #endregion
+                            }
+                        }
+                        else
+                        {
+                            #region setConvertResult
+                            if (!clsTempData.setConvertResult(out outMessage2,
+                                "",
+                                "",
+                                "หา BillPackageItem ทั้งหมดของคนไข้คนนี้",
+                                "Not Found",
+                                "UID:" + Schdt.Rows[x]["UID"].ToString()))
+                            {
+                                MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            #endregion
+                        }
+                    }
+                    else
+                    {
+                        countExist += 1;
+                        #region setConvertResult
+                        if (!clsTempData.setConvertResult(out outMessage2,
+                            "",
+                            "",
+                            "เช็คว่ามีการ Convert แล้วหรือยัง",
+                            "Yes",
+                            "PatientVisitUID:" + Schdt.Rows[x]["PatientVisitUID"].ToString()))
+                        {
+                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage2, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        #endregion
                     }
                 }//
             }//if (Schdt != null && Schdt.Rows.Count > 0)
+            else
+            {
+                if (!clsTempData.setConvertResult(out outMessage,
+                        "",
+                        "",
+                        "Select_PatientScheduleOrder",
+                        "Not found",
+                        "OrderNo:" + OrderNo))
+                {
+                    MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                countFail += 1;
+            }
         }
-
         private void chkBox_ToggleStateChanged(object sender, StateChangedEventArgs args)
         {
             if (chkBox.Checked == true)
@@ -932,6 +1758,11 @@ namespace MassConvert
             #region Variable
             var countLoop = 0;
             var SQLPT = new StringBuilder();
+            var clsTempData = new clsTempData();
+            var outMessage = "";
+            countSuccess = 0;
+            countExist = 0;
+            countFail = 0;
             #endregion
             setRadButton(btCancel, true);
             #region FindMaxLoop
@@ -946,6 +1777,7 @@ namespace MassConvert
             }
             #endregion
             setProgressBar(progressBar1, CountCheckBox, 0);
+            clsTempData.dtConvertResult = null;
             for (int i = 0; i <= gvPatient.Rows.Count - 1; i++)
             {
                 if (backgroundWorker1.CancellationPending)
@@ -963,7 +1795,17 @@ namespace MassConvert
                     countLoop += 1;
                     setProgressBar(progressBar1, CountCheckBox, countLoop);
                     setLabel(lblStatus, string.Format("Converting order of {0} {1}", gvPatient.Rows[i].Cells["Name"].Value.ToString().Trim(), gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim()));
-
+                    #region setConvertResult
+                    if (!clsTempData.setConvertResult(out outMessage,
+                        gvPatient.Rows[i].Cells["HN"].Value.ToString(),
+                        gvPatient.Rows[i].Cells["Name"].Value.ToString().Trim() + " " + gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim(),
+                        "Start",
+                        "",
+                        ""))
+                    {
+                        MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    #endregion
                     #region SQLQuery
                     SQLPT.Append("SELECT * FROM [PatientScheduleOrder] ps");
                     SQLPT.Append(" inner join Patient p on p.UID = ps.PatientUID ");
@@ -976,14 +1818,54 @@ namespace MassConvert
                     dt = db.Select_OrderNo(SQLPT.ToString());
                     if (dt.Rows.Count > 0)
                     {
+                        #region setConvertResult
+                        if (!clsTempData.setConvertResult(out outMessage,
+                            "",
+                            "",
+                            "Select_OrderNo",
+                            "Success",
+                            ""))
+                        {
+                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        #endregion
                         ConvertPreOrder(dt.Rows[0]["ScheduleOrderNumber"].ToString());
+                    }
+                    else
+                    {
+                        #region setConvertResult
+                        if (!clsTempData.setConvertResult(out outMessage,
+                            "",
+                            "",
+                            "Select_OrderNo",
+                            "No Row",
+                            ""))
+                        {
+                            MessageBox.Show("เกิดข้อผิดพลาดขณะสร้างหน้าสรุปการ Convert" + Environment.NewLine + outMessage, "setConvertResult", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        #endregion
                     }
                     //System.Threading.Thread.Sleep(5000);
                 }
                 setLabel(lblStatus, string.Format("Converting order ",""));
             }
             setRadButton(btCancel, false);
-            MessageBox.Show(string.Format("Convert order successful {0} from {1}",countLoop.ToString(),CountCheckBox.ToString()));
+            setLabel(lblStatus, string.Format("Waiting", ""));
+            setProgressBar(progressBar1, CountCheckBox, 0);
+
+            DialogResult dr= MessageBox.Show(string.Format("Convert order successful {0} from {1}"+Environment.NewLine+"(Success : {2} Exist : {3} Fail : {4}"+Environment.NewLine+Environment.NewLine+"ต้องการดูรายละเอียดการ Convert คลิก Yes",
+                countLoop.ToString(), CountCheckBox.ToString(),
+                countSuccess.ToString(),
+                countExist.ToString(),
+                countFail.ToString()),
+                "Success",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Information);
+            if (dr == DialogResult.Yes)
+            {
+                ConvertResult cr = new ConvertResult();
+                cr.ShowDialog();
+            }
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -1049,11 +1931,71 @@ namespace MassConvert
                 e.RowElement.GradientStyle = GradientStyles.Solid;
                 e.RowElement.BackColor = ColorTranslator.FromHtml("#FFFFFF");
             }
+            if (e.RowElement.RowInfo.Cells["IsConvertPreOrder"].Value.ToString().Trim() == "1")
+            {
+                e.RowElement.ForeColor= ColorTranslator.FromHtml("#22B14C");
+            }
+            else
+            {
+                e.RowElement.ForeColor = ColorTranslator.FromHtml("#000000");
+            }
         }
 
         private void btCancel_Click(object sender, EventArgs e)
         {
             backgroundWorker1.CancelAsync();
+        }
+
+        private void ddlIsConverted_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UnCheckAll();
+            var value = ddlIsConverted.Text;
+            var count = 0;
+            switch (value)
+            {
+                case "- ทั้งหมด -":
+                    for(int i = 0; i < gvPatient.Rows.Count; i++)
+                    {
+                        gvPatient.Rows[i].IsVisible = true;
+                        count += 1;
+                    }
+                    break;
+                case "เฉพาะที่ยังไม่ Convert":
+                    for (int i = 0; i < gvPatient.Rows.Count; i++)
+                    {
+                        if (gvPatient.Rows[i].Cells["IsConvertPreOrder"].Value.ToString().Trim() == "1")
+                        {
+                            gvPatient.Rows[i].IsVisible = false;
+                        }
+                        else
+                        {
+                            gvPatient.Rows[i].IsVisible = true;
+                            count += 1;
+                        }
+                    }
+                    break;
+                case "เฉพาะที่ Convert แล้ว":
+                    for (int i = 0; i < gvPatient.Rows.Count; i++)
+                    {
+                        if (gvPatient.Rows[i].Cells["IsConvertPreOrder"].Value.ToString().Trim() == "1")
+                        {
+                            gvPatient.Rows[i].IsVisible = true;
+                            count += 1;
+                        }
+                        else
+                        {
+                            gvPatient.Rows[i].IsVisible = false;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+            lblIsConvertCount.Text = count.ToString();
+            if (chkBox.Checked)
+            {
+                CheckAll();
+            }
         }
     }
 }

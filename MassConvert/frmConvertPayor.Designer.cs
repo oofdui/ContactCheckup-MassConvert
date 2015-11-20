@@ -64,6 +64,9 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.lblStatus = new System.Windows.Forms.Label();
             this.btCancel = new Telerik.WinControls.UI.RadButton();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ddlIsConverted = new System.Windows.Forms.ComboBox();
+            this.lblIsConvertCount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtFilterPayor)).BeginInit();
@@ -120,6 +123,7 @@
             this.chkBox.TabIndex = 44;
             this.chkBox.Text = "Check All";
             this.chkBox.ThemeName = "Desert";
+            this.chkBox.ToggleState = Telerik.WinControls.Enumerations.ToggleState.On;
             this.chkBox.ToggleStateChanged += new Telerik.WinControls.UI.StateChangedEventHandler(this.chkBox_ToggleStateChanged);
             // 
             // txtFilterPayor
@@ -183,6 +187,8 @@
             // 
             this.radGroupBox2.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
             this.radGroupBox2.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.radGroupBox2.Controls.Add(this.lblIsConvertCount);
+            this.radGroupBox2.Controls.Add(this.ddlIsConverted);
             this.radGroupBox2.Controls.Add(this.radLabel1);
             this.radGroupBox2.Controls.Add(this.chkBox);
             this.radGroupBox2.Controls.Add(this.txtFilterPayor);
@@ -627,7 +633,7 @@
             // 
             // 
             // 
-            this.btCancel.RootElement.ControlBounds = new System.Drawing.Rectangle(717, 417, 130, 24);
+            this.btCancel.RootElement.ControlBounds = new System.Drawing.Rectangle(838, 417, 130, 24);
             this.btCancel.RootElement.Enabled = false;
             this.btCancel.Size = new System.Drawing.Size(115, 43);
             this.btCancel.TabIndex = 49;
@@ -635,11 +641,45 @@
             this.btCancel.ThemeName = "Desert";
             this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(301, 417);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(403, 13);
+            this.label3.TabIndex = 55;
+            this.label3.Text = "Tip : ไฮไลท์สีเหลือง=ลงทะเบียน Mobile แล้ว , ตัวหนังสือสีเขียว=ConvertPreOrder แล" +
+    "้ว";
+            // 
+            // ddlIsConverted
+            // 
+            this.ddlIsConverted.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlIsConverted.FormattingEnabled = true;
+            this.ddlIsConverted.Items.AddRange(new object[] {
+            "- ทั้งหมด -",
+            "เฉพาะที่ยังไม่ Convert",
+            "เฉพาะที่ Convert แล้ว"});
+            this.ddlIsConverted.Location = new System.Drawing.Point(137, 16);
+            this.ddlIsConverted.Name = "ddlIsConverted";
+            this.ddlIsConverted.Size = new System.Drawing.Size(121, 21);
+            this.ddlIsConverted.TabIndex = 46;
+            this.ddlIsConverted.SelectedIndexChanged += new System.EventHandler(this.ddlIsConverted_SelectedIndexChanged);
+            // 
+            // lblIsConvertCount
+            // 
+            this.lblIsConvertCount.AutoSize = true;
+            this.lblIsConvertCount.Location = new System.Drawing.Point(265, 20);
+            this.lblIsConvertCount.Name = "lblIsConvertCount";
+            this.lblIsConvertCount.Size = new System.Drawing.Size(13, 13);
+            this.lblIsConvertCount.TabIndex = 47;
+            this.lblIsConvertCount.Text = "0";
+            // 
             // frmConvertPayor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(956, 470);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.radGroupBox3);
@@ -729,5 +769,8 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label lblStatus;
         private Telerik.WinControls.UI.RadButton btCancel;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox ddlIsConverted;
+        private System.Windows.Forms.Label lblIsConvertCount;
     }
 }
