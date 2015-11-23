@@ -54,16 +54,21 @@ namespace MassConvert
 
         private void btFind_Click(object sender, EventArgs e)
         {
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
             ExcData exc = new ExcData();
-            gvPatient.Rows.Clear();
+            if (gvPatient.Rows.Count > 0) {
+                gvPatient.DataSource = null;
+                gvPatient.Rows.Clear();
+            }
 
             string DateFrom = dtpDateFrom.Value.ToString("yyyy-MM-dd") + " " + dtpTimeFrom.Value.ToString("HH:mm");
             string DateTo = dtpDateTo.Value.ToString("yyyy-MM-dd") + " " + dtpTimeTo.Value.ToString("HH:mm");
             string SQL = string.Empty;
-            var strSQL = "";
+            var strSQL = new StringBuilder();
             var clsSQL = new clsSQLNative();
             var clsTempData = new clsTempData();
 
+            /*
             SQL = "SELECT [NO] ,HN,Forename as Name , Surname as LastName , DOE , [ChildCompany],[STS],[SyncWhen],'0' IsConvertPreOrder FROM [tblPatientList] WHERE DOE BETWEEN '" + DateFrom + "' AND '" + DateTo + "' ";
             if (rbAll.Checked)
             {
@@ -77,9 +82,47 @@ namespace MassConvert
             {
                 SQL += "AND STS='R' ";
             }
+            if (ddlPayor.SelectedItem.Value.ToString() != "")
+            {
+                SQL += "AND Payor='"+ddlPayor.SelectedItem.Value.ToString()+"' ";
+            }
             SQL += "ORDER BY SyncWhen,NO";
-
-            dtPatient = clsSQL.Bind(SQL, clsSQLNative.DBType.SQLServer, "MobieConnect");
+            */
+            #region SQLQuery
+            strSQL.Append("SELECT ");
+            strSQL.Append("P.NO,");
+            strSQL.Append("P.HN,");
+            strSQL.Append("LTRIM(REPLACE(P.Name, P.PreName, ''))Name,");
+            strSQL.Append("P.LastName,");
+            strSQL.Append("P.DOE,");
+            strSQL.Append("PL.ChildCompany,");
+            strSQL.Append("P.StatusOnMobile STS,");
+            strSQL.Append("P.SyncWhen,'0' IsConvertPreOrder ");
+            strSQL.Append("FROM ");
+            strSQL.Append("Patient P ");
+            strSQL.Append("LEFT JOIN tblPatientList PL ON P.rowguid = PL.PatientUID ");
+            strSQL.Append("WHERE ");
+            strSQL.Append("(P.DOE BETWEEN '"+DateFrom+"' AND '"+DateTo+"') ");
+            if (rbAll.Checked)
+            {
+                //SQL += "AND StatusOnMobile in ('A','R') ";
+            }
+            else if (rbNotRegister.Checked)
+            {
+                strSQL.Append("AND StatusOnMobile IS NULL ");
+            }
+            else if (rbRegister.Checked)
+            {
+                strSQL.Append("AND StatusOnMobile='R' ");
+            }
+            if (ddlPayor.SelectedItem.ToString() != "- ทั้งหมด -")
+            {
+                strSQL.Append("AND Payor='" + ddlPayor.SelectedItem.ToString() + "' ");
+            }
+            strSQL.Append("ORDER BY SyncWhen,NO;");
+            #endregion
+            dtPatient = clsSQL.Bind(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect");
+            strSQL.Length = 0;strSQL.Capacity = 0;
             clsTempData.dtIsConverted = null;
             if(dtPatient!=null && dtPatient.Rows.Count > 0)
             {
@@ -124,13 +167,39 @@ namespace MassConvert
             }
             else
             {
+                MessageBox.Show("ไม่พบข้อมูลตามเงื่อนไขที่ต้องการ", "No data.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 lblCountPT.Text = "0 Record.";
                 bs.DataSource = null;
                 gvPatient.DataSource = bs;
                 gvPatient.Refresh();
             }
         }
-
+        private void setPayor()
+        {
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            #region Variable
+            var strSQL = "SELECT DISTINCT Payor FROM Patient WHERE DOE BETWEEN '" + dtpDateFrom.Value.ToString("yyyy-MM-dd")+" "+dtpTimeFrom.Value.ToString("HH:mm") + "' AND '" + dtpDateTo.Value.ToString("yyyy-MM-dd")+" "+dtpTimeTo.Value.ToString("HH:mm") + "' ORDER BY Payor ASC;";
+            var clsSQL = new clsSQLNative();
+            var dt = new DataTable();
+            #endregion
+            #region Procedure
+            if (ddlPayor.Items.Count > 0)
+            {
+                ddlPayor.Items.Clear();
+            }
+            dt = clsSQL.Bind(strSQL, clsSQLNative.DBType.SQLServer, "MobieConnect");
+            if(dt!=null && dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    ddlPayor.Items.Add(dt.Rows[i]["Payor"].ToString().Trim());
+                }
+                ddlPayor.SelectedIndex = 0;
+            }
+            ddlPayor.Items.Insert(0, new RadListDataItem("- ทั้งหมด -", "NULL"));
+            ddlPayor.SelectedIndex = 0;
+            #endregion
+        }
         //Custom Method
         private void CheckAll()
         {
@@ -378,7 +447,8 @@ namespace MassConvert
             var clsTempData = new clsTempData();
 
             //หาข้อมูลใน tb PatientScheduleOrder ของ OrderNumber ที่ถูกส่งมา
-            DataTable Schdt = db.Select_PatientScheduleOrder(OrderNo);
+            DataTable Schdt = new DataTable();
+            Schdt = db.Select_PatientScheduleOrder(OrderNo);
             if (Schdt != null && Schdt.Rows.Count > 0)
             {
                 if (!clsTempData.setConvertResult(out outMessage,
@@ -393,8 +463,10 @@ namespace MassConvert
                 for (int x = 0; x < Schdt.Rows.Count; x++)
                 {
                     var outMessage2 = "";
+                    var PatientVisitUID = "";
+                    PatientVisitUID = Schdt.Rows[x]["PatientVisitUID"].ToString();
                     //เช็คว่ามีการ Convert แล้วหรือยัง
-                    if (string.IsNullOrEmpty(Schdt.Rows[x]["PatientVisitUID"].ToString()) || Schdt.Rows[x]["PatientVisitUID"].ToString() == "0")
+                    if (string.IsNullOrEmpty(PatientVisitUID) || PatientVisitUID == "0")
                     {
                         #region setConvertResult
                         if (!clsTempData.setConvertResult(out outMessage2,
@@ -1617,6 +1689,7 @@ namespace MassConvert
             dtpDateTo.Value = DateTime.Today;
             dtpTimeFrom.Value = Convert.ToDateTime("06:00:00");
             dtpTimeTo.Value = Convert.ToDateTime("06:00:00");
+            setPayor();
             CheckCareproviderUID(Login_UID);
             AddingCheckBoxColumn();
             //BindPayor();
@@ -1764,7 +1837,9 @@ namespace MassConvert
             countExist = 0;
             countFail = 0;
             #endregion
+            setRadButton(btConvert, false);
             setRadButton(btCancel, true);
+            setPictureBox(anWaiting, true);
             #region FindMaxLoop
             int CountCheckBox = 0;
             for (int r = 0; r <= gvPatient.Rows.Count - 1; r++)
@@ -1792,8 +1867,10 @@ namespace MassConvert
                 //Loop ทำงานเฉพาะคนที่ Check Box
                 if (Convert.ToBoolean(gvPatient.Rows[i].Cells["Check"].Value) == true)
                 {
+                    var forename = gvPatient.Rows[i].Cells["Name"].Value.ToString().Trim();
+                    var surname = gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim();
+                    var doe = gvPatient.Rows[i].Cells["DOE"].Value;
                     countLoop += 1;
-                    setProgressBar(progressBar1, CountCheckBox, countLoop);
                     setLabel(lblStatus, string.Format("Converting order of {0} {1}", gvPatient.Rows[i].Cells["Name"].Value.ToString().Trim(), gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim()));
                     #region setConvertResult
                     if (!clsTempData.setConvertResult(out outMessage,
@@ -1809,13 +1886,14 @@ namespace MassConvert
                     #region SQLQuery
                     SQLPT.Append("SELECT * FROM [PatientScheduleOrder] ps");
                     SQLPT.Append(" inner join Patient p on p.UID = ps.PatientUID ");
-                    SQLPT.Append(" and p.Forename = N'" + gvPatient.Rows[i].Cells["Name"].Value.ToString().Trim() + "'");
-                    SQLPT.Append(" and Surname = N'" + gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim() + "'");
-                    SQLPT.Append(" and ps.ScheduledDttm between '" + Convert.ToDateTime(gvPatient.Rows[i].Cells["DOE"].Value).ToString("yyyy-MM-dd HH:mm:ss") + "' and '" + Convert.ToDateTime(gvPatient.Rows[i].Cells["DOE"].Value).ToString("yyyy-MM-dd HH:mm:ss") + "'");
+                    SQLPT.Append(" and p.Forename = N'" + forename + "'");
+                    SQLPT.Append(" and Surname = N'" + surname + "'");
+                    SQLPT.Append(" and ps.ScheduledDttm between '" + Convert.ToDateTime(doe).ToString("yyyy-MM-dd HH:mm:ss") + "' and '" + Convert.ToDateTime(doe).ToString("yyyy-MM-dd HH:mm:ss") + "'");
                     SQLPT.Append(" and ps.StatusFlag = 'A'");
                     #endregion
                     DataTable dt = new DataTable();
                     dt = db.Select_OrderNo(SQLPT.ToString());
+                    SQLPT.Length = 0;SQLPT.Capacity = 0;
                     if (dt.Rows.Count > 0)
                     {
                         #region setConvertResult
@@ -1847,8 +1925,11 @@ namespace MassConvert
                     }
                     //System.Threading.Thread.Sleep(5000);
                 }
-                setLabel(lblStatus, string.Format("Converting order ",""));
+                setProgressBar(progressBar1, CountCheckBox, countLoop);
+                //setLabel(lblStatus, string.Format("Converting order ",""));
             }
+            setPictureBox(anWaiting, false);
+            setRadButton(btConvert, true);
             setRadButton(btCancel, false);
             setLabel(lblStatus, string.Format("Waiting", ""));
             setProgressBar(progressBar1, CountCheckBox, 0);
@@ -1914,6 +1995,20 @@ namespace MassConvert
             else
             {
                 control.Enabled = enable;
+            }
+        }
+        private void setPictureBox(PictureBox control, bool visible)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(new MethodInvoker(delegate
+                {
+                    control.Visible = visible;
+                }));
+            }
+            else
+            {
+                control.Visible = visible;
             }
         }
 
@@ -1991,11 +2086,41 @@ namespace MassConvert
                 default:
                     break;
             }
-            lblIsConvertCount.Text = count.ToString();
+            lblIsConvertCount.Text = string.Format("พบข้อมูลตรงเงื่อนไข {0} รายการ", count.ToString());
             if (chkBox.Checked)
             {
                 CheckAll();
             }
+        }
+
+        private void dtpDateFrom_ValueChanged(object sender, EventArgs e)
+        {
+            setPayor();
+        }
+
+        private void dtpTimeFrom_ValueChanged(object sender, EventArgs e)
+        {
+            setPayor();
+        }
+
+        private void dtpDateTo_ValueChanged(object sender, EventArgs e)
+        {
+            setPayor();
+        }
+
+        private void dtpTimeTo_ValueChanged(object sender, EventArgs e)
+        {
+            setPayor();
+        }
+    }
+    public class ComboboxItems
+    {
+        public string Text { get; set; }
+        public object Value { get; set; }
+
+        public override string ToString()
+        {
+            return Text;
         }
     }
 }

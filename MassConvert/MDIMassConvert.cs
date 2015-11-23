@@ -252,6 +252,7 @@ namespace MassConvert
         {
             CloseFrom();
             frmConvertPayor frmChild = new frmConvertPayor();
+            //ConvertByPayor frmChild = new ConvertByPayor();
             frmChild.MdiParent = this;
             frmChild.WindowState = FormWindowState.Maximized;
             frmChild.Text = "Convert Order by Payor";

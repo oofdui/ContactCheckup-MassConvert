@@ -36,6 +36,8 @@
             this.btConvert = new Telerik.WinControls.UI.RadButton();
             this.desertTheme2 = new Telerik.WinControls.Themes.DesertTheme();
             this.radGroupBox2 = new Telerik.WinControls.UI.RadGroupBox();
+            this.lblIsConvertCount = new System.Windows.Forms.Label();
+            this.ddlIsConverted = new System.Windows.Forms.ComboBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.btFind = new Telerik.WinControls.UI.RadButton();
             this.dtpTimeTo = new Telerik.WinControls.UI.RadDateTimePicker();
@@ -65,8 +67,9 @@
             this.lblStatus = new System.Windows.Forms.Label();
             this.btCancel = new Telerik.WinControls.UI.RadButton();
             this.label3 = new System.Windows.Forms.Label();
-            this.ddlIsConverted = new System.Windows.Forms.ComboBox();
-            this.lblIsConvertCount = new System.Windows.Forms.Label();
+            this.anWaiting = new System.Windows.Forms.PictureBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.ddlPayor = new Telerik.WinControls.UI.RadDropDownList();
             ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtFilterPayor)).BeginInit();
@@ -94,6 +97,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.cboAgreement)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cboPayor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btCancel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.anWaiting)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ddlPayor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -106,6 +111,7 @@
             this.radLabel1.Size = new System.Drawing.Size(126, 19);
             this.radLabel1.TabIndex = 45;
             this.radLabel1.Text = "Filter by Company :";
+            this.radLabel1.Visible = false;
             // 
             // chkBox
             // 
@@ -141,6 +147,7 @@
             this.txtFilterPayor.TabIndex = 43;
             this.txtFilterPayor.TabStop = false;
             this.txtFilterPayor.ThemeName = "Desert";
+            this.txtFilterPayor.Visible = false;
             this.txtFilterPayor.TextChanged += new System.EventHandler(this.txtFilterPayor_TextChanged);
             // 
             // gvPatient
@@ -211,6 +218,29 @@
             this.radGroupBox2.TabIndex = 48;
             this.radGroupBox2.ThemeName = "Desert";
             // 
+            // lblIsConvertCount
+            // 
+            this.lblIsConvertCount.AutoSize = true;
+            this.lblIsConvertCount.Location = new System.Drawing.Point(265, 20);
+            this.lblIsConvertCount.Name = "lblIsConvertCount";
+            this.lblIsConvertCount.Size = new System.Drawing.Size(13, 13);
+            this.lblIsConvertCount.TabIndex = 47;
+            this.lblIsConvertCount.Text = "0";
+            // 
+            // ddlIsConverted
+            // 
+            this.ddlIsConverted.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlIsConverted.FormattingEnabled = true;
+            this.ddlIsConverted.Items.AddRange(new object[] {
+            "- ทั้งหมด -",
+            "เฉพาะที่ยังไม่ Convert",
+            "เฉพาะที่ Convert แล้ว"});
+            this.ddlIsConverted.Location = new System.Drawing.Point(137, 16);
+            this.ddlIsConverted.Name = "ddlIsConverted";
+            this.ddlIsConverted.Size = new System.Drawing.Size(121, 21);
+            this.ddlIsConverted.TabIndex = 46;
+            this.ddlIsConverted.SelectedIndexChanged += new System.EventHandler(this.ddlIsConverted_SelectedIndexChanged);
+            // 
             // backgroundWorker1
             // 
             this.backgroundWorker1.WorkerSupportsCancellation = true;
@@ -258,6 +288,7 @@
             this.dtpTimeTo.Text = "radDateTimePicker1";
             this.dtpTimeTo.ThemeName = "Desert";
             this.dtpTimeTo.Value = new System.DateTime(2014, 4, 30, 10, 1, 23, 230);
+            this.dtpTimeTo.ValueChanged += new System.EventHandler(this.dtpTimeTo_ValueChanged);
             // 
             // dtpTimeFrom
             // 
@@ -284,6 +315,7 @@
             this.dtpTimeFrom.Text = "radDateTimePicker1";
             this.dtpTimeFrom.ThemeName = "Desert";
             this.dtpTimeFrom.Value = new System.DateTime(2014, 4, 30, 9, 59, 31, 951);
+            this.dtpTimeFrom.ValueChanged += new System.EventHandler(this.dtpTimeFrom_ValueChanged);
             // 
             // dtpDateTo
             // 
@@ -307,6 +339,7 @@
             this.dtpDateTo.Text = "radDateTimePicker1";
             this.dtpDateTo.ThemeName = "Desert";
             this.dtpDateTo.Value = new System.DateTime(2014, 4, 30, 9, 58, 39, 279);
+            this.dtpDateTo.ValueChanged += new System.EventHandler(this.dtpDateTo_ValueChanged);
             // 
             // dtpDateFrom
             // 
@@ -330,6 +363,7 @@
             this.dtpDateFrom.Text = "radDateTimePicker1";
             this.dtpDateFrom.ThemeName = "Desert";
             this.dtpDateFrom.Value = new System.DateTime(2014, 4, 30, 9, 57, 31, 619);
+            this.dtpDateFrom.ValueChanged += new System.EventHandler(this.dtpDateFrom_ValueChanged);
             // 
             // label1
             // 
@@ -353,9 +387,11 @@
             this.radGroupBox1.Controls.Add(this.dtpTimeFrom);
             this.radGroupBox1.Controls.Add(this.dtpDateTo);
             this.radGroupBox1.Controls.Add(this.dtpDateFrom);
+            this.radGroupBox1.Controls.Add(this.ddlPayor);
             this.radGroupBox1.Controls.Add(this.label1);
             this.radGroupBox1.Controls.Add(this.lblCountPT);
             this.radGroupBox1.Controls.Add(this.label10);
+            this.radGroupBox1.Controls.Add(this.label4);
             this.radGroupBox1.Controls.Add(this.label2);
             this.radGroupBox1.Controls.Add(this.lblDateFrom);
             this.radGroupBox1.FooterImageIndex = -1;
@@ -609,9 +645,9 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(13, 436);
+            this.progressBar1.Location = new System.Drawing.Point(43, 436);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(691, 23);
+            this.progressBar1.Size = new System.Drawing.Size(661, 23);
             this.progressBar1.TabIndex = 54;
             // 
             // lblStatus
@@ -651,34 +687,52 @@
             this.label3.Text = "Tip : ไฮไลท์สีเหลือง=ลงทะเบียน Mobile แล้ว , ตัวหนังสือสีเขียว=ConvertPreOrder แล" +
     "้ว";
             // 
-            // ddlIsConverted
+            // anWaiting
             // 
-            this.ddlIsConverted.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ddlIsConverted.FormattingEnabled = true;
-            this.ddlIsConverted.Items.AddRange(new object[] {
-            "- ทั้งหมด -",
-            "เฉพาะที่ยังไม่ Convert",
-            "เฉพาะที่ Convert แล้ว"});
-            this.ddlIsConverted.Location = new System.Drawing.Point(137, 16);
-            this.ddlIsConverted.Name = "ddlIsConverted";
-            this.ddlIsConverted.Size = new System.Drawing.Size(121, 21);
-            this.ddlIsConverted.TabIndex = 46;
-            this.ddlIsConverted.SelectedIndexChanged += new System.EventHandler(this.ddlIsConverted_SelectedIndexChanged);
+            this.anWaiting.Image = global::MassConvert.Properties.Resources.anLoading;
+            this.anWaiting.Location = new System.Drawing.Point(12, 434);
+            this.anWaiting.Name = "anWaiting";
+            this.anWaiting.Size = new System.Drawing.Size(25, 24);
+            this.anWaiting.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.anWaiting.TabIndex = 56;
+            this.anWaiting.TabStop = false;
+            this.anWaiting.Visible = false;
             // 
-            // lblIsConvertCount
+            // label4
             // 
-            this.lblIsConvertCount.AutoSize = true;
-            this.lblIsConvertCount.Location = new System.Drawing.Point(265, 20);
-            this.lblIsConvertCount.Name = "lblIsConvertCount";
-            this.lblIsConvertCount.Size = new System.Drawing.Size(13, 13);
-            this.lblIsConvertCount.TabIndex = 47;
-            this.lblIsConvertCount.Text = "0";
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label4.Location = new System.Drawing.Point(352, 68);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(62, 21);
+            this.label4.TabIndex = 33;
+            this.label4.Text = "Payor :";
+            // 
+            // ddlPayor
+            // 
+            this.ddlPayor.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.ddlPayor.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ddlPayor.DropDownAnimationEnabled = true;
+            this.ddlPayor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.ddlPayor.Location = new System.Drawing.Point(418, 68);
+            this.ddlPayor.Name = "ddlPayor";
+            // 
+            // 
+            // 
+            this.ddlPayor.RootElement.ControlBounds = new System.Drawing.Rectangle(15, 51, 106, 20);
+            this.ddlPayor.RootElement.StretchVertically = true;
+            this.ddlPayor.ShowImageInEditorArea = true;
+            this.ddlPayor.Size = new System.Drawing.Size(275, 25);
+            this.ddlPayor.SortStyle = Telerik.WinControls.Enumerations.SortStyle.Ascending;
+            this.ddlPayor.TabIndex = 0;
+            this.ddlPayor.ThemeName = "Desert";
             // 
             // frmConvertPayor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(956, 470);
+            this.Controls.Add(this.anWaiting);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.progressBar1);
@@ -725,6 +779,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.cboAgreement)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cboPayor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btCancel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.anWaiting)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ddlPayor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -772,5 +828,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox ddlIsConverted;
         private System.Windows.Forms.Label lblIsConvertCount;
+        private System.Windows.Forms.PictureBox anWaiting;
+        private Telerik.WinControls.UI.RadDropDownList ddlPayor;
+        private System.Windows.Forms.Label label4;
     }
 }

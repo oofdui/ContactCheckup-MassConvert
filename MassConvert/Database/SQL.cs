@@ -1010,6 +1010,15 @@ namespace MassConvert.Database
         public DataTable Select_PatientScheduleOrder(string ScheduleOrderNumber)
         {
             DataTable dt = new DataTable();
+            clsSQLNative clsSQL = new clsSQLNative();
+            dt = clsSQL.Bind("Select *,(select pasid from Patient where Patient.UID = PatientScheduleOrder.PatientUID and Patient.StatusFlag = 'A') HN from PatientScheduleOrder where ScheduleOrderNumber = '" + ScheduleOrderNumber + "' and statusflag = 'A'", 
+                clsSQLNative.DBType.SQLServer, 
+                "csBConnect");
+            return dt;
+        }
+        public DataTable Select_PatientScheduleOrder_Old(string ScheduleOrderNumber)
+        {
+            DataTable dt = new DataTable();
             try
             {
                 SqlCommand cmd = new SqlCommand();
@@ -2694,6 +2703,13 @@ namespace MassConvert.Database
 
         }
         public DataTable Select_OrderNo(string strSQL)
+        {
+            DataTable dt = new DataTable();
+            clsSQLNative clsSQL = new clsSQLNative();
+            dt = clsSQL.Bind(strSQL, clsSQLNative.DBType.SQLServer, "csBConnect");
+            return dt;
+        }
+        public DataTable Select_OrderNo_OLD(string strSQL)
         {
             DataTable dt = new DataTable();
             SqlCommand cmd = new SqlCommand();

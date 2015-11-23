@@ -76,7 +76,7 @@ class clsTempData
         }
         if(_dtIsConverted!=null && _dtIsConverted.Rows.Count > 0)
         {
-            DataRow[] drs = _dtIsConverted.Select("Forename='"+forename+"' AND Surname='"+surname+"' AND DOE='"+DateTime.Parse(doe).ToString("yyyy-MM-dd HH:mm")+ "'");
+            DataRow[] drs = _dtIsConverted.Select("Forename='"+forename.Trim()+"' AND Surname='"+surname.Trim()+"' AND DOE='"+DateTime.Parse(doe).ToString("yyyy-MM-dd HH:mm")+ "'");
             if (drs.Length > 0)
             {
                 for(int i = 0; i < drs.Length; i++)
@@ -127,5 +127,47 @@ class clsTempData
         */
         #endregion
         return result;
+    }
+    /// <summary>
+    /// ดึงรายชื่อพนักงานตามเงื่อนไขที่กำหนด เพื่อนำไปแสดงบนหน้า ConvertByPayor
+    /// </summary>
+    /// <param name="doeFrom"></param>
+    /// <param name="doeTo"></param>
+    /// <param name="payor"></param>
+    /// <returns></returns>
+    public DataTable getPatient(DateTime doeFrom,DateTime doeTo,string payor,string mobileStatus)
+    {
+        System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+        #region Variable
+        var dt = new DataTable();
+        var strSQL = new StringBuilder();
+        var clsSQL = new clsSQLNative();
+        #endregion
+        #region Procedure
+        #region SQLQuery
+        strSQL.Append("SELECT ");
+        strSQL.Append("No,HN,PreName,Name,LastName,DOE,Payor,SyncWhen,'0' IsConvertPreOrder ");
+        strSQL.Append("FROM ");
+        strSQL.Append("Patient P ");
+        strSQL.Append("WHERE ");
+        strSQL.Append("(DOE BETWEEN '" + doeFrom.ToString("yyyy-MM-dd HH:mm") + "' AND '" + doeTo.ToString("yyyy-MM-dd HH:mm") + "') ");
+        if(payor!="" && payor.ToLower() != "null")
+        {
+            strSQL.Append("AND Payor='"+payor+"' ");
+        }
+        if (mobileStatus == "NotRegister")
+        {
+            strSQL.Append("AND SyncStatus!='1' ");
+        }
+        else if (mobileStatus == "Register")
+        {
+            strSQL.Append("AND SyncStatus='1' ");
+        }
+        strSQL.Append("ORDER BY ");
+        strSQL.Append("No;");
+        #endregion
+        dt = clsSQL.Bind(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect");
+        #endregion
+        return dt;
     }
 }

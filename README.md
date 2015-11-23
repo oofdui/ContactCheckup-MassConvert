@@ -1,5 +1,9 @@
 # ContactCheckup-MassConvert
 
+* v.1.12
+	* เพิ่มบริษัทให้ค้นหาในหน้า ConvertByPayor
+* v.1.11
+	* ปรับหน้า ConvertByPayor ให้ทำงานได้อย่างถูกต้อง
 * v.1.10
 	* เพิ่มตัวเช็คสถานะการ Convert ใน B-Connect ก่อนทำการ Convert
 	* เพิ่มหน้าสรุปการทำงานของโปรแกรม เมื่อ Convert เสร็จสิ้น

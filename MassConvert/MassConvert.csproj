@@ -97,6 +97,12 @@
   <ItemGroup>
     <Compile Include="App_Code\clsSQLNative.cs" />
     <Compile Include="App_Code\clsTempData.cs" />
+    <Compile Include="ConvertByPayor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConvertByPayor.Designer.cs">
+      <DependentUpon>ConvertByPayor.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConvertResult.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -174,6 +180,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ConvertByPayor.resx">
+      <DependentUpon>ConvertByPayor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ConvertResult.resx">
       <DependentUpon>ConvertResult.cs</DependentUpon>
     </EmbeddedResource>
@@ -249,6 +258,10 @@
     <Content Include="Images\IconArrow3.jpg" />
     <Content Include="Images\IconArrow4.jpg" />
     <Content Include="Images\LogoB.jpg" />
+    <None Include="Resources\anLoading.gif" />
+    <None Include="Resources\icFilter.png" />
+    <None Include="Resources\icPrice.png" />
+    <None Include="Resources\icSearch.png" />
     <None Include="Service References\WSCenter\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>

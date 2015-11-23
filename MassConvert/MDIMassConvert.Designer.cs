@@ -87,7 +87,7 @@
             this.radRibbonBar1.OptionsButton.Text = "Options";
             this.radRibbonBar1.QuickAccessToolBarItems.AddRange(new Telerik.WinControls.RadItem[] {
             this.radButtonElement1});
-            this.radRibbonBar1.Size = new System.Drawing.Size(984, 161);
+            this.radRibbonBar1.Size = new System.Drawing.Size(984, 167);
             this.radRibbonBar1.StartButtonImage = ((System.Drawing.Image)(resources.GetObject("radRibbonBar1.StartButtonImage")));
             this.radRibbonBar1.TabIndex = 8;
             this.radRibbonBar1.Text = "โรงพยาบาลกรุงเทพระยอง";
@@ -98,7 +98,7 @@
             this.ribbonTab1.AccessibleDescription = "Home";
             this.ribbonTab1.AccessibleName = "Home";
             this.ribbonTab1.Class = "RibbonTab";
-            this.ribbonTab1.IsSelected = true;
+            this.ribbonTab1.IsSelected = false;
             this.ribbonTab1.Items.AddRange(new Telerik.WinControls.RadItem[] {
             this.radRibbonBarGroup1,
             this.radRibbonBarGroup2,
@@ -172,7 +172,7 @@
             this.ribbonTab2.AccessibleDescription = "Convert";
             this.ribbonTab2.AccessibleName = "Convert";
             this.ribbonTab2.Class = "RibbonTab";
-            this.ribbonTab2.IsSelected = false;
+            this.ribbonTab2.IsSelected = true;
             this.ribbonTab2.Items.AddRange(new Telerik.WinControls.RadItem[] {
             this.radRibbonBarGroup3,
             this.radRibbonBarGroup4});
