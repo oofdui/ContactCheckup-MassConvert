@@ -42,15 +42,15 @@
             this.btFind = new Telerik.WinControls.UI.RadButton();
             this.dtpTimeTo = new Telerik.WinControls.UI.RadDateTimePicker();
             this.dtpTimeFrom = new Telerik.WinControls.UI.RadDateTimePicker();
-            this.dtpDateTo = new Telerik.WinControls.UI.RadDateTimePicker();
-            this.dtpDateFrom = new Telerik.WinControls.UI.RadDateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.radGroupBox1 = new Telerik.WinControls.UI.RadGroupBox();
             this.rbRegister = new System.Windows.Forms.RadioButton();
             this.rbNotRegister = new System.Windows.Forms.RadioButton();
             this.rbAll = new System.Windows.Forms.RadioButton();
+            this.ddlPayor = new Telerik.WinControls.UI.RadDropDownList();
             this.lblCountPT = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lblDateFrom = new System.Windows.Forms.Label();
             this.radGroupBox3 = new Telerik.WinControls.UI.RadGroupBox();
@@ -68,8 +68,8 @@
             this.btCancel = new Telerik.WinControls.UI.RadButton();
             this.label3 = new System.Windows.Forms.Label();
             this.anWaiting = new System.Windows.Forms.PictureBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.ddlPayor = new Telerik.WinControls.UI.RadDropDownList();
+            this.dtpDateFrom = new System.Windows.Forms.DateTimePicker();
+            this.dtpDateTo = new System.Windows.Forms.DateTimePicker();
             ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtFilterPayor)).BeginInit();
@@ -81,10 +81,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.btFind)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtpTimeTo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtpTimeFrom)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dtpDateTo)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dtpDateFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox1)).BeginInit();
             this.radGroupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ddlPayor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox3)).BeginInit();
             this.radGroupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lblPercentTag)).BeginInit();
@@ -98,7 +97,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.cboPayor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btCancel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.anWaiting)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ddlPayor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -317,54 +315,6 @@
             this.dtpTimeFrom.Value = new System.DateTime(2014, 4, 30, 9, 59, 31, 951);
             this.dtpTimeFrom.ValueChanged += new System.EventHandler(this.dtpTimeFrom_ValueChanged);
             // 
-            // dtpDateTo
-            // 
-            this.dtpDateTo.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.dtpDateTo.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.dtpDateTo.Format = System.Windows.Forms.DateTimePickerFormat.Long;
-            this.dtpDateTo.Location = new System.Drawing.Point(418, 12);
-            this.dtpDateTo.MaxDate = new System.DateTime(9998, 12, 31, 0, 0, 0, 0);
-            this.dtpDateTo.MinDate = new System.DateTime(((long)(0)));
-            this.dtpDateTo.Name = "dtpDateTo";
-            this.dtpDateTo.NullableValue = new System.DateTime(2014, 4, 30, 9, 58, 39, 279);
-            this.dtpDateTo.NullDate = new System.DateTime(((long)(0)));
-            // 
-            // 
-            // 
-            this.dtpDateTo.RootElement.ControlBounds = new System.Drawing.Rectangle(418, 12, 150, 18);
-            this.dtpDateTo.RootElement.StretchVertically = true;
-            this.dtpDateTo.Size = new System.Drawing.Size(275, 25);
-            this.dtpDateTo.TabIndex = 42;
-            this.dtpDateTo.TabStop = false;
-            this.dtpDateTo.Text = "radDateTimePicker1";
-            this.dtpDateTo.ThemeName = "Desert";
-            this.dtpDateTo.Value = new System.DateTime(2014, 4, 30, 9, 58, 39, 279);
-            this.dtpDateTo.ValueChanged += new System.EventHandler(this.dtpDateTo_ValueChanged);
-            // 
-            // dtpDateFrom
-            // 
-            this.dtpDateFrom.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.dtpDateFrom.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.dtpDateFrom.Format = System.Windows.Forms.DateTimePickerFormat.Long;
-            this.dtpDateFrom.Location = new System.Drawing.Point(82, 12);
-            this.dtpDateFrom.MaxDate = new System.DateTime(9998, 12, 31, 0, 0, 0, 0);
-            this.dtpDateFrom.MinDate = new System.DateTime(((long)(0)));
-            this.dtpDateFrom.Name = "dtpDateFrom";
-            this.dtpDateFrom.NullableValue = new System.DateTime(2014, 4, 30, 9, 57, 31, 619);
-            this.dtpDateFrom.NullDate = new System.DateTime(((long)(0)));
-            // 
-            // 
-            // 
-            this.dtpDateFrom.RootElement.ControlBounds = new System.Drawing.Rectangle(82, 12, 150, 18);
-            this.dtpDateFrom.RootElement.StretchVertically = true;
-            this.dtpDateFrom.Size = new System.Drawing.Size(280, 25);
-            this.dtpDateFrom.TabIndex = 41;
-            this.dtpDateFrom.TabStop = false;
-            this.dtpDateFrom.Text = "radDateTimePicker1";
-            this.dtpDateFrom.ThemeName = "Desert";
-            this.dtpDateFrom.Value = new System.DateTime(2014, 4, 30, 9, 57, 31, 619);
-            this.dtpDateFrom.ValueChanged += new System.EventHandler(this.dtpDateFrom_ValueChanged);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -379,14 +329,14 @@
             // 
             this.radGroupBox1.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
             this.radGroupBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.radGroupBox1.Controls.Add(this.dtpDateTo);
+            this.radGroupBox1.Controls.Add(this.dtpDateFrom);
             this.radGroupBox1.Controls.Add(this.rbRegister);
             this.radGroupBox1.Controls.Add(this.rbNotRegister);
             this.radGroupBox1.Controls.Add(this.rbAll);
             this.radGroupBox1.Controls.Add(this.btFind);
             this.radGroupBox1.Controls.Add(this.dtpTimeTo);
             this.radGroupBox1.Controls.Add(this.dtpTimeFrom);
-            this.radGroupBox1.Controls.Add(this.dtpDateTo);
-            this.radGroupBox1.Controls.Add(this.dtpDateFrom);
             this.radGroupBox1.Controls.Add(this.ddlPayor);
             this.radGroupBox1.Controls.Add(this.label1);
             this.radGroupBox1.Controls.Add(this.lblCountPT);
@@ -444,6 +394,25 @@
             this.rbAll.Text = "ทั้งหมด";
             this.rbAll.UseVisualStyleBackColor = true;
             // 
+            // ddlPayor
+            // 
+            this.ddlPayor.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.ddlPayor.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ddlPayor.DropDownAnimationEnabled = true;
+            this.ddlPayor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.ddlPayor.Location = new System.Drawing.Point(418, 68);
+            this.ddlPayor.Name = "ddlPayor";
+            // 
+            // 
+            // 
+            this.ddlPayor.RootElement.ControlBounds = new System.Drawing.Rectangle(418, 68, 106, 20);
+            this.ddlPayor.RootElement.StretchVertically = true;
+            this.ddlPayor.ShowImageInEditorArea = true;
+            this.ddlPayor.Size = new System.Drawing.Size(275, 25);
+            this.ddlPayor.SortStyle = Telerik.WinControls.Enumerations.SortStyle.Ascending;
+            this.ddlPayor.TabIndex = 0;
+            this.ddlPayor.ThemeName = "Desert";
+            // 
             // lblCountPT
             // 
             this.lblCountPT.AutoSize = true;
@@ -463,6 +432,16 @@
             this.label10.Size = new System.Drawing.Size(37, 21);
             this.label10.TabIndex = 34;
             this.label10.Text = "To :";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label4.Location = new System.Drawing.Point(352, 68);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(62, 21);
+            this.label4.TabIndex = 33;
+            this.label4.Text = "Payor :";
             // 
             // label2
             // 
@@ -698,34 +677,23 @@
             this.anWaiting.TabStop = false;
             this.anWaiting.Visible = false;
             // 
-            // label4
+            // dtpDateFrom
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.label4.Location = new System.Drawing.Point(352, 68);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(62, 21);
-            this.label4.TabIndex = 33;
-            this.label4.Text = "Payor :";
+            this.dtpDateFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.dtpDateFrom.Location = new System.Drawing.Point(82, 14);
+            this.dtpDateFrom.Name = "dtpDateFrom";
+            this.dtpDateFrom.Size = new System.Drawing.Size(280, 21);
+            this.dtpDateFrom.TabIndex = 46;
+            this.dtpDateFrom.ValueChanged += new System.EventHandler(this.dtpDateFrom_ValueChanged_1);
             // 
-            // ddlPayor
+            // dtpDateTo
             // 
-            this.ddlPayor.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.ddlPayor.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ddlPayor.DropDownAnimationEnabled = true;
-            this.ddlPayor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.ddlPayor.Location = new System.Drawing.Point(418, 68);
-            this.ddlPayor.Name = "ddlPayor";
-            // 
-            // 
-            // 
-            this.ddlPayor.RootElement.ControlBounds = new System.Drawing.Rectangle(15, 51, 106, 20);
-            this.ddlPayor.RootElement.StretchVertically = true;
-            this.ddlPayor.ShowImageInEditorArea = true;
-            this.ddlPayor.Size = new System.Drawing.Size(275, 25);
-            this.ddlPayor.SortStyle = Telerik.WinControls.Enumerations.SortStyle.Ascending;
-            this.ddlPayor.TabIndex = 0;
-            this.ddlPayor.ThemeName = "Desert";
+            this.dtpDateTo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.dtpDateTo.Location = new System.Drawing.Point(418, 14);
+            this.dtpDateTo.Name = "dtpDateTo";
+            this.dtpDateTo.Size = new System.Drawing.Size(275, 21);
+            this.dtpDateTo.TabIndex = 47;
+            this.dtpDateTo.ValueChanged += new System.EventHandler(this.dtpDateTo_ValueChanged_1);
             // 
             // frmConvertPayor
             // 
@@ -761,11 +729,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.btFind)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtpTimeTo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtpTimeFrom)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dtpDateTo)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dtpDateFrom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox1)).EndInit();
             this.radGroupBox1.ResumeLayout(false);
             this.radGroupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ddlPayor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox3)).EndInit();
             this.radGroupBox3.ResumeLayout(false);
             this.radGroupBox3.PerformLayout();
@@ -780,7 +747,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.cboPayor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btCancel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.anWaiting)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ddlPayor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -801,8 +767,6 @@
         private Telerik.WinControls.UI.RadButton btFind;
         private Telerik.WinControls.UI.RadDateTimePicker dtpTimeTo;
         private Telerik.WinControls.UI.RadDateTimePicker dtpTimeFrom;
-        private Telerik.WinControls.UI.RadDateTimePicker dtpDateTo;
-        private Telerik.WinControls.UI.RadDateTimePicker dtpDateFrom;
         private System.Windows.Forms.Label label1;
         private Telerik.WinControls.UI.RadGroupBox radGroupBox1;
         private System.Windows.Forms.Label lblCountPT;
@@ -831,5 +795,7 @@
         private System.Windows.Forms.PictureBox anWaiting;
         private Telerik.WinControls.UI.RadDropDownList ddlPayor;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.DateTimePicker dtpDateFrom;
+        private System.Windows.Forms.DateTimePicker dtpDateTo;
     }
 }

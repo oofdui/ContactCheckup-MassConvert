@@ -2112,6 +2112,16 @@ namespace MassConvert
         {
             setPayor();
         }
+
+        private void dtpDateFrom_ValueChanged_1(object sender, EventArgs e)
+        {
+            setPayor();
+        }
+
+        private void dtpDateTo_ValueChanged_1(object sender, EventArgs e)
+        {
+            setPayor();
+        }
     }
     public class ComboboxItems
     {
