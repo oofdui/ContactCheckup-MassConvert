@@ -1,5 +1,9 @@
 # ContactCheckup-MassConvert
 
+* v.1.14
+	* เพิ่มตัวแสดง จำนวน/จำนวนทั้งหมด ขณะ Convert
+* v.1.13
+	* เปลี่ยน DatePicker เป็นของ VisualStudio
 * v.1.12
 	* เพิ่มบริษัทให้ค้นหาในหน้า ConvertByPayor
 * v.1.11

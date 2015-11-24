@@ -44,6 +44,8 @@
             this.dtpTimeFrom = new Telerik.WinControls.UI.RadDateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.radGroupBox1 = new Telerik.WinControls.UI.RadGroupBox();
+            this.dtpDateTo = new System.Windows.Forms.DateTimePicker();
+            this.dtpDateFrom = new System.Windows.Forms.DateTimePicker();
             this.rbRegister = new System.Windows.Forms.RadioButton();
             this.rbNotRegister = new System.Windows.Forms.RadioButton();
             this.rbAll = new System.Windows.Forms.RadioButton();
@@ -68,8 +70,7 @@
             this.btCancel = new Telerik.WinControls.UI.RadButton();
             this.label3 = new System.Windows.Forms.Label();
             this.anWaiting = new System.Windows.Forms.PictureBox();
-            this.dtpDateFrom = new System.Windows.Forms.DateTimePicker();
-            this.dtpDateTo = new System.Windows.Forms.DateTimePicker();
+            this.lblProgressDetail = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtFilterPayor)).BeginInit();
@@ -361,6 +362,24 @@
             this.radGroupBox1.Size = new System.Drawing.Size(934, 96);
             this.radGroupBox1.TabIndex = 47;
             this.radGroupBox1.ThemeName = "Desert";
+            // 
+            // dtpDateTo
+            // 
+            this.dtpDateTo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.dtpDateTo.Location = new System.Drawing.Point(418, 14);
+            this.dtpDateTo.Name = "dtpDateTo";
+            this.dtpDateTo.Size = new System.Drawing.Size(275, 21);
+            this.dtpDateTo.TabIndex = 47;
+            this.dtpDateTo.ValueChanged += new System.EventHandler(this.dtpDateTo_ValueChanged_1);
+            // 
+            // dtpDateFrom
+            // 
+            this.dtpDateFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.dtpDateFrom.Location = new System.Drawing.Point(82, 14);
+            this.dtpDateFrom.Name = "dtpDateFrom";
+            this.dtpDateFrom.Size = new System.Drawing.Size(280, 21);
+            this.dtpDateFrom.TabIndex = 46;
+            this.dtpDateFrom.ValueChanged += new System.EventHandler(this.dtpDateFrom_ValueChanged_1);
             // 
             // rbRegister
             // 
@@ -669,31 +688,25 @@
             // anWaiting
             // 
             this.anWaiting.Image = global::MassConvert.Properties.Resources.anLoading;
-            this.anWaiting.Location = new System.Drawing.Point(12, 434);
+            this.anWaiting.Location = new System.Drawing.Point(12, 432);
             this.anWaiting.Name = "anWaiting";
-            this.anWaiting.Size = new System.Drawing.Size(25, 24);
+            this.anWaiting.Size = new System.Drawing.Size(23, 23);
             this.anWaiting.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.anWaiting.TabIndex = 56;
             this.anWaiting.TabStop = false;
             this.anWaiting.Visible = false;
             // 
-            // dtpDateFrom
+            // lblProgressDetail
             // 
-            this.dtpDateFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.dtpDateFrom.Location = new System.Drawing.Point(82, 14);
-            this.dtpDateFrom.Name = "dtpDateFrom";
-            this.dtpDateFrom.Size = new System.Drawing.Size(280, 21);
-            this.dtpDateFrom.TabIndex = 46;
-            this.dtpDateFrom.ValueChanged += new System.EventHandler(this.dtpDateFrom_ValueChanged_1);
-            // 
-            // dtpDateTo
-            // 
-            this.dtpDateTo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.dtpDateTo.Location = new System.Drawing.Point(418, 14);
-            this.dtpDateTo.Name = "dtpDateTo";
-            this.dtpDateTo.Size = new System.Drawing.Size(275, 21);
-            this.dtpDateTo.TabIndex = 47;
-            this.dtpDateTo.ValueChanged += new System.EventHandler(this.dtpDateTo_ValueChanged_1);
+            this.lblProgressDetail.AutoSize = true;
+            this.lblProgressDetail.BackColor = System.Drawing.Color.Transparent;
+            this.lblProgressDetail.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
+            this.lblProgressDetail.Location = new System.Drawing.Point(7, 455);
+            this.lblProgressDetail.Name = "lblProgressDetail";
+            this.lblProgressDetail.Size = new System.Drawing.Size(34, 13);
+            this.lblProgressDetail.TabIndex = 57;
+            this.lblProgressDetail.Text = "{0}/{1}";
+            this.lblProgressDetail.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // frmConvertPayor
             // 
@@ -709,6 +722,7 @@
             this.Controls.Add(this.btConvert);
             this.Controls.Add(this.radGroupBox2);
             this.Controls.Add(this.radGroupBox1);
+            this.Controls.Add(this.lblProgressDetail);
             this.Name = "frmConvertPayor";
             // 
             // 
@@ -797,5 +811,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DateTimePicker dtpDateFrom;
         private System.Windows.Forms.DateTimePicker dtpDateTo;
+        private System.Windows.Forms.Label lblProgressDetail;
     }
 }

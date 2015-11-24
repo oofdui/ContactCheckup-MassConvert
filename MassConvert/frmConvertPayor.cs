@@ -1684,6 +1684,7 @@ namespace MassConvert
         }
         private void frmConvertPayor_Load(object sender, EventArgs e)
         {
+            setLabel(lblProgressDetail, "");
             db = new SQL();
             dtpDateFrom.Value = DateTime.Today;
             dtpDateTo.Value = DateTime.Today;
@@ -1926,8 +1927,10 @@ namespace MassConvert
                     //System.Threading.Thread.Sleep(5000);
                 }
                 setProgressBar(progressBar1, CountCheckBox, countLoop);
+                setLabel(lblProgressDetail, string.Format("{0}/{1}", countLoop, CountCheckBox));
                 //setLabel(lblStatus, string.Format("Converting order ",""));
             }
+            setLabel(lblProgressDetail, "");
             setPictureBox(anWaiting, false);
             setRadButton(btConvert, true);
             setRadButton(btCancel, false);
