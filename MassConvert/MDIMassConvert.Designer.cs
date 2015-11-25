@@ -31,6 +31,9 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MDIMassConvert));
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.desertTheme1 = new Telerik.WinControls.Themes.DesertTheme();
+            this.radStatusStrip1 = new Telerik.WinControls.UI.RadStatusStrip();
+            this.radLabelElement1 = new Telerik.WinControls.UI.RadLabelElement();
             this.radRibbonBar1 = new Telerik.WinControls.UI.RadRibbonBar();
             this.ribbonTab1 = new Telerik.WinControls.UI.RibbonTab();
             this.radRibbonBarGroup1 = new Telerik.WinControls.UI.RadRibbonBarGroup();
@@ -42,16 +45,39 @@
             this.ribbonTab2 = new Telerik.WinControls.UI.RibbonTab();
             this.radRibbonBarGroup3 = new Telerik.WinControls.UI.RadRibbonBarGroup();
             this.btConvertPayor = new Telerik.WinControls.UI.RadImageButtonElement();
+            this.radRibbonBarGroup6 = new Telerik.WinControls.UI.RadRibbonBarGroup();
+            this.btConvertPayorByRegisterDate = new Telerik.WinControls.UI.RadImageButtonElement();
             this.radRibbonBarGroup4 = new Telerik.WinControls.UI.RadRibbonBarGroup();
             this.btConvertIndividula = new Telerik.WinControls.UI.RadImageButtonElement();
             this.ribbonTab3 = new Telerik.WinControls.UI.RibbonTab();
             this.radButtonElement1 = new Telerik.WinControls.UI.RadButtonElement();
-            this.desertTheme1 = new Telerik.WinControls.Themes.DesertTheme();
-            this.radStatusStrip1 = new Telerik.WinControls.UI.RadStatusStrip();
-            this.radLabelElement1 = new Telerik.WinControls.UI.RadLabelElement();
-            ((System.ComponentModel.ISupportInitialize)(this.radRibbonBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radStatusStrip1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radRibbonBar1)).BeginInit();
             this.SuspendLayout();
+            // 
+            // radStatusStrip1
+            // 
+            this.radStatusStrip1.AutoSize = true;
+            this.radStatusStrip1.Items.AddRange(new Telerik.WinControls.RadItem[] {
+            this.radLabelElement1});
+            this.radStatusStrip1.LayoutStyle = Telerik.WinControls.UI.RadStatusBarLayoutStyle.Stack;
+            this.radStatusStrip1.Location = new System.Drawing.Point(0, 705);
+            this.radStatusStrip1.Name = "radStatusStrip1";
+            this.radStatusStrip1.Size = new System.Drawing.Size(984, 26);
+            this.radStatusStrip1.TabIndex = 10;
+            this.radStatusStrip1.Text = "radStatusStrip1";
+            this.radStatusStrip1.ThemeName = "Desert";
+            // 
+            // radLabelElement1
+            // 
+            this.radLabelElement1.AccessibleDescription = "  Version : 1 Release : 5 Update : 12/06/2014 14:00";
+            this.radLabelElement1.AccessibleName = "  Version : 1 Release : 5 Update : 12/06/2014 14:00";
+            this.radLabelElement1.Margin = new System.Windows.Forms.Padding(1);
+            this.radLabelElement1.Name = "radLabelElement1";
+            this.radStatusStrip1.SetSpring(this.radLabelElement1, false);
+            this.radLabelElement1.Text = "  Version : 1 Release : 7 Update : 24/07/2014 15:00";
+            this.radLabelElement1.TextWrap = true;
+            this.radLabelElement1.Visibility = Telerik.WinControls.ElementVisibility.Visible;
             // 
             // radRibbonBar1
             // 
@@ -175,6 +201,7 @@
             this.ribbonTab2.IsSelected = true;
             this.ribbonTab2.Items.AddRange(new Telerik.WinControls.RadItem[] {
             this.radRibbonBarGroup3,
+            this.radRibbonBarGroup6,
             this.radRibbonBarGroup4});
             this.ribbonTab2.Name = "ribbonTab2";
             this.ribbonTab2.Text = "Convert";
@@ -199,6 +226,27 @@
             this.btConvertPayor.Text = "Convert By Payor";
             this.btConvertPayor.Visibility = Telerik.WinControls.ElementVisibility.Visible;
             this.btConvertPayor.Click += new System.EventHandler(this.btConvertPayor_Click);
+            // 
+            // radRibbonBarGroup6
+            // 
+            this.radRibbonBarGroup6.AccessibleDescription = "Payor(RegisDate)";
+            this.radRibbonBarGroup6.AccessibleName = "Payor(RegisDate)";
+            this.radRibbonBarGroup6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F);
+            this.radRibbonBarGroup6.Items.AddRange(new Telerik.WinControls.RadItem[] {
+            this.btConvertPayorByRegisterDate});
+            this.radRibbonBarGroup6.Name = "radRibbonBarGroup6";
+            this.radRibbonBarGroup6.Text = "Payor (RegisDate)";
+            this.radRibbonBarGroup6.Visibility = Telerik.WinControls.ElementVisibility.Visible;
+            // 
+            // btConvertPayorByRegisterDate
+            // 
+            this.btConvertPayorByRegisterDate.AccessibleDescription = "radImageButtonElement2";
+            this.btConvertPayorByRegisterDate.AccessibleName = "radImageButtonElement2";
+            this.btConvertPayorByRegisterDate.Image = global::MassConvert.Properties.Resources.Icon9;
+            this.btConvertPayorByRegisterDate.Name = "btConvertPayorByRegisterDate";
+            this.btConvertPayorByRegisterDate.Text = "radImageButtonElement2";
+            this.btConvertPayorByRegisterDate.Visibility = Telerik.WinControls.ElementVisibility.Visible;
+            this.btConvertPayorByRegisterDate.Click += new System.EventHandler(this.btConvertPayorByRegisterDate_Click);
             // 
             // radRibbonBarGroup4
             // 
@@ -240,30 +288,6 @@
             this.radButtonElement1.Visibility = Telerik.WinControls.ElementVisibility.Visible;
             this.radButtonElement1.ZIndex = 1;
             // 
-            // radStatusStrip1
-            // 
-            this.radStatusStrip1.AutoSize = true;
-            this.radStatusStrip1.Items.AddRange(new Telerik.WinControls.RadItem[] {
-            this.radLabelElement1});
-            this.radStatusStrip1.LayoutStyle = Telerik.WinControls.UI.RadStatusBarLayoutStyle.Stack;
-            this.radStatusStrip1.Location = new System.Drawing.Point(0, 705);
-            this.radStatusStrip1.Name = "radStatusStrip1";
-            this.radStatusStrip1.Size = new System.Drawing.Size(984, 26);
-            this.radStatusStrip1.TabIndex = 10;
-            this.radStatusStrip1.Text = "radStatusStrip1";
-            this.radStatusStrip1.ThemeName = "Desert";
-            // 
-            // radLabelElement1
-            // 
-            this.radLabelElement1.AccessibleDescription = "  Version : 1 Release : 5 Update : 12/06/2014 14:00";
-            this.radLabelElement1.AccessibleName = "  Version : 1 Release : 5 Update : 12/06/2014 14:00";
-            this.radLabelElement1.Margin = new System.Windows.Forms.Padding(1);
-            this.radLabelElement1.Name = "radLabelElement1";
-            this.radStatusStrip1.SetSpring(this.radLabelElement1, false);
-            this.radLabelElement1.Text = "  Version : 1 Release : 7 Update : 24/07/2014 15:00";
-            this.radLabelElement1.TextWrap = true;
-            this.radLabelElement1.Visibility = Telerik.WinControls.ElementVisibility.Visible;
-            // 
             // MDIMassConvert
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -275,8 +299,8 @@
             this.IsMdiContainer = true;
             this.Name = "MDIMassConvert";
             this.Text = "โรงพยาบาลกรุงเทพระยอง";
-            ((System.ComponentModel.ISupportInitialize)(this.radRibbonBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radStatusStrip1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radRibbonBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -302,6 +326,8 @@
         private Telerik.WinControls.UI.RadLabelElement radLabelElement1;
         private Telerik.WinControls.UI.RadRibbonBarGroup radRibbonBarGroup5;
         private Telerik.WinControls.UI.RadImageButtonElement radImageButtonElement1;
+        private Telerik.WinControls.UI.RadRibbonBarGroup radRibbonBarGroup6;
+        private Telerik.WinControls.UI.RadImageButtonElement btConvertPayorByRegisterDate;
     }
 }
 

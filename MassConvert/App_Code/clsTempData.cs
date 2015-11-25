@@ -6,6 +6,12 @@ using System.Text;
 
 class clsTempData
 {
+    private static string _username="";
+    public static string Username
+    {
+        get { return _username; }
+        set { _username = value; }
+    }
     private static int rowNumber = 0;
     private static DataTable _dtIsConverted;
     public static DataTable dtIsConverted

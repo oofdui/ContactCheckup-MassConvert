@@ -83,6 +83,16 @@ namespace MassConvert.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Icon9 {
+            get {
+                object obj = ResourceManager.GetObject("Icon9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icPrice {
             get {
                 object obj = ResourceManager.GetObject("icPrice", resourceCulture);

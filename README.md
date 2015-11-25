@@ -1,5 +1,9 @@
 # ContactCheckup-MassConvert
 
+* v.1.15
+	* เพิ่มโหมด ConvertByPayor โดยเลือกจากช่วงวันที่ลงทะเบียน
+	* เพิ่มการเก็บ Log การ ConvertPreOrder เพื่อดูระยะเวลาในการทำงานแต่ละเคส
+	* เพิ่ม Argument ส่ง Username ที่ใช้ Logon เข้ามา เพื่อนำไปใช้งานอื่นๆ
 * v.1.14
 	* เพิ่มตัวแสดง จำนวน/จำนวนทั้งหมด ขณะ Convert
 * v.1.13

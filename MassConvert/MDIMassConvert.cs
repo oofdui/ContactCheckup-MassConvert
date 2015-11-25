@@ -288,5 +288,15 @@ namespace MassConvert
             frmChild.Text = "Print Sticker Lab Barcode";
             frmChild.Show();
         }
+
+        private void btConvertPayorByRegisterDate_Click(object sender, EventArgs e)
+        {
+            CloseFrom();
+            frmConvertPayorByRegisterDate frmChild = new frmConvertPayorByRegisterDate();
+            frmChild.MdiParent = this;
+            frmChild.WindowState = FormWindowState.Maximized;
+            frmChild.Text = "Convert Order by Payor (RegisterDate)";
+            frmChild.Show();
+        }
     }
 }
