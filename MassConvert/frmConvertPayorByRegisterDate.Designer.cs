@@ -44,16 +44,17 @@
             this.dtpTimeFrom = new Telerik.WinControls.UI.RadDateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.radGroupBox1 = new Telerik.WinControls.UI.RadGroupBox();
+            this.pbCountPT = new System.Windows.Forms.PictureBox();
             this.dtpDateTo = new System.Windows.Forms.DateTimePicker();
             this.dtpDateFrom = new System.Windows.Forms.DateTimePicker();
             this.rbRegister = new System.Windows.Forms.RadioButton();
             this.rbNotRegister = new System.Windows.Forms.RadioButton();
             this.rbAll = new System.Windows.Forms.RadioButton();
-            this.ddlPayor = new Telerik.WinControls.UI.RadDropDownList();
             this.lblCountPT = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.lblDateFrom = new System.Windows.Forms.Label();
             this.radGroupBox3 = new Telerik.WinControls.UI.RadGroupBox();
             this.lblPercentTag = new Telerik.WinControls.UI.RadLabel();
@@ -71,9 +72,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.anWaiting = new System.Windows.Forms.PictureBox();
             this.lblProgressDetail = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.bwWaiting = new System.ComponentModel.BackgroundWorker();
-            this.pbCountPT = new System.Windows.Forms.PictureBox();
+            this.ddlPayor = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtFilterPayor)).BeginInit();
@@ -87,7 +87,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dtpTimeFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox1)).BeginInit();
             this.radGroupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ddlPayor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCountPT)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox3)).BeginInit();
             this.radGroupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lblPercentTag)).BeginInit();
@@ -101,7 +101,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.cboPayor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btCancel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.anWaiting)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbCountPT)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -334,6 +333,7 @@
             // 
             this.radGroupBox1.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
             this.radGroupBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.radGroupBox1.Controls.Add(this.ddlPayor);
             this.radGroupBox1.Controls.Add(this.pbCountPT);
             this.radGroupBox1.Controls.Add(this.dtpDateTo);
             this.radGroupBox1.Controls.Add(this.dtpDateFrom);
@@ -343,7 +343,6 @@
             this.radGroupBox1.Controls.Add(this.btFind);
             this.radGroupBox1.Controls.Add(this.dtpTimeTo);
             this.radGroupBox1.Controls.Add(this.dtpTimeFrom);
-            this.radGroupBox1.Controls.Add(this.ddlPayor);
             this.radGroupBox1.Controls.Add(this.label1);
             this.radGroupBox1.Controls.Add(this.lblCountPT);
             this.radGroupBox1.Controls.Add(this.label10);
@@ -368,6 +367,17 @@
             this.radGroupBox1.Size = new System.Drawing.Size(934, 96);
             this.radGroupBox1.TabIndex = 47;
             this.radGroupBox1.ThemeName = "Desert";
+            // 
+            // pbCountPT
+            // 
+            this.pbCountPT.Image = global::MassConvert.Properties.Resources.anLoading;
+            this.pbCountPT.Location = new System.Drawing.Point(832, 40);
+            this.pbCountPT.Name = "pbCountPT";
+            this.pbCountPT.Size = new System.Drawing.Size(23, 23);
+            this.pbCountPT.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbCountPT.TabIndex = 58;
+            this.pbCountPT.TabStop = false;
+            this.pbCountPT.Visible = false;
             // 
             // dtpDateTo
             // 
@@ -419,25 +429,6 @@
             this.rbAll.Text = "ทั้งหมด";
             this.rbAll.UseVisualStyleBackColor = true;
             // 
-            // ddlPayor
-            // 
-            this.ddlPayor.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.ddlPayor.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ddlPayor.DropDownAnimationEnabled = true;
-            this.ddlPayor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.ddlPayor.Location = new System.Drawing.Point(418, 68);
-            this.ddlPayor.Name = "ddlPayor";
-            // 
-            // 
-            // 
-            this.ddlPayor.RootElement.ControlBounds = new System.Drawing.Rectangle(418, 68, 106, 20);
-            this.ddlPayor.RootElement.StretchVertically = true;
-            this.ddlPayor.ShowImageInEditorArea = true;
-            this.ddlPayor.Size = new System.Drawing.Size(275, 25);
-            this.ddlPayor.SortStyle = Telerik.WinControls.Enumerations.SortStyle.Ascending;
-            this.ddlPayor.TabIndex = 0;
-            this.ddlPayor.ThemeName = "Desert";
-            // 
             // lblCountPT
             // 
             this.lblCountPT.AutoSize = true;
@@ -477,6 +468,16 @@
             this.label2.Size = new System.Drawing.Size(65, 21);
             this.label2.TabIndex = 33;
             this.label2.Text = "Status :";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label5.Location = new System.Drawing.Point(1, 8);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(72, 21);
+            this.label5.TabIndex = 33;
+            this.label5.Text = "Register";
             // 
             // lblDateFrom
             // 
@@ -714,30 +715,18 @@
             this.lblProgressDetail.Text = "{0}/{1}";
             this.lblProgressDetail.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.label5.Location = new System.Drawing.Point(1, 8);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(72, 21);
-            this.label5.TabIndex = 33;
-            this.label5.Text = "Register";
-            // 
             // bwWaiting
             // 
             this.bwWaiting.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwWaiting_DoWork);
             // 
-            // pbCountPT
+            // ddlPayor
             // 
-            this.pbCountPT.Image = global::MassConvert.Properties.Resources.anLoading;
-            this.pbCountPT.Location = new System.Drawing.Point(832, 40);
-            this.pbCountPT.Name = "pbCountPT";
-            this.pbCountPT.Size = new System.Drawing.Size(23, 23);
-            this.pbCountPT.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pbCountPT.TabIndex = 58;
-            this.pbCountPT.TabStop = false;
-            this.pbCountPT.Visible = false;
+            this.ddlPayor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlPayor.FormattingEnabled = true;
+            this.ddlPayor.Location = new System.Drawing.Point(418, 70);
+            this.ddlPayor.Name = "ddlPayor";
+            this.ddlPayor.Size = new System.Drawing.Size(275, 21);
+            this.ddlPayor.TabIndex = 59;
             // 
             // frmConvertPayorByRegisterDate
             // 
@@ -777,7 +766,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox1)).EndInit();
             this.radGroupBox1.ResumeLayout(false);
             this.radGroupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ddlPayor)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCountPT)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox3)).EndInit();
             this.radGroupBox3.ResumeLayout(false);
             this.radGroupBox3.PerformLayout();
@@ -792,7 +781,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.cboPayor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btCancel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.anWaiting)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbCountPT)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -839,7 +827,6 @@
         private System.Windows.Forms.ComboBox ddlIsConverted;
         private System.Windows.Forms.Label lblIsConvertCount;
         private System.Windows.Forms.PictureBox anWaiting;
-        private Telerik.WinControls.UI.RadDropDownList ddlPayor;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DateTimePicker dtpDateFrom;
         private System.Windows.Forms.DateTimePicker dtpDateTo;
@@ -847,5 +834,6 @@
         private System.Windows.Forms.Label label5;
         private System.ComponentModel.BackgroundWorker bwWaiting;
         private System.Windows.Forms.PictureBox pbCountPT;
+        private System.Windows.Forms.ComboBox ddlPayor;
     }
 }

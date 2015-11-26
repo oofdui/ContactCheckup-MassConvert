@@ -59,6 +59,7 @@ namespace MassConvert
         private void btFind_Click(object sender, EventArgs e)
         {
             bwWaiting.RunWorkerAsync();
+            //Find();
         }
         private void setPayor()
         {
@@ -92,24 +93,59 @@ namespace MassConvert
         //Custom Method
         private void CheckAll()
         {
-            foreach (GridViewRowInfo row in gvPatient.Rows)
+            if (gvPatient.InvokeRequired)
             {
-                if (Convert.ToBoolean(row.Cells["Check"].Value) == false)
+                gvPatient.Invoke(new MethodInvoker(delegate
                 {
-                    if (row.IsVisible == true)
+                    foreach (GridViewRowInfo row in gvPatient.Rows)
                     {
-                        row.Cells["Check"].Value = true;
+                        if (Convert.ToBoolean(row.Cells["Check"].Value) == false)
+                        {
+                            if (row.IsVisible == true)
+                            {
+                                row.Cells["Check"].Value = true;
+                            }
+                        }
+                    }
+                }));
+            }
+            else
+            {
+                foreach (GridViewRowInfo row in gvPatient.Rows)
+                {
+                    if (Convert.ToBoolean(row.Cells["Check"].Value) == false)
+                    {
+                        if (row.IsVisible == true)
+                        {
+                            row.Cells["Check"].Value = true;
+                        }
                     }
                 }
             }
         }
         private void UnCheckAll()
         {
-            foreach (GridViewRowInfo row in gvPatient.Rows)
+            if (gvPatient.InvokeRequired)
             {
-                if (Convert.ToBoolean(row.Cells["Check"].Value) == true)
+                gvPatient.Invoke(new MethodInvoker(delegate
                 {
-                    row.Cells["Check"].Value = false;
+                    foreach (GridViewRowInfo row in gvPatient.Rows)
+                    {
+                        if (Convert.ToBoolean(row.Cells["Check"].Value) == true)
+                        {
+                            row.Cells["Check"].Value = false;
+                        }
+                    }
+                }));
+            }
+            else
+            {
+                foreach (GridViewRowInfo row in gvPatient.Rows)
+                {
+                    if (Convert.ToBoolean(row.Cells["Check"].Value) == true)
+                    {
+                        row.Cells["Check"].Value = false;
+                    }
                 }
             }
         }
@@ -1891,7 +1927,7 @@ namespace MassConvert
                 control.Text = text;
             }
         }
-        private void setComboBox(RadDropDownList control, int index)
+        private void setComboBox(ComboBox control, int index)
         {
             if (control.InvokeRequired)
             {
@@ -1976,57 +2012,138 @@ namespace MassConvert
         }
         private void ddlIsConverted_SelectedIndexChanged(object sender, EventArgs e)
         {
+            IsConvertFilter();
+        }
+        private void IsConvertFilter()
+        {
             UnCheckAll();
-            var value = ddlIsConverted.Text;
+            var value = "";
+            if (ddlIsConverted.InvokeRequired)
+            {
+                ddlIsConverted.Invoke(new MethodInvoker(delegate
+                {
+                    value = ddlIsConverted.Text;
+                }));
+            }
+            else
+            {
+                value = ddlIsConverted.Text;
+            }
             var count = 0;
             switch (value)
             {
                 case "- ทั้งหมด -":
-                    for(int i = 0; i < gvPatient.Rows.Count; i++)
+                    if (gvPatient.InvokeRequired)
                     {
-                        gvPatient.Rows[i].IsVisible = true;
-                        count += 1;
-                    }
-                    break;
-                case "เฉพาะที่ยังไม่ Convert":
-                    for (int i = 0; i < gvPatient.Rows.Count; i++)
-                    {
-                        if (gvPatient.Rows[i].Cells["IsConvertPreOrder"].Value.ToString().Trim() == "1")
+                        gvPatient.Invoke(new MethodInvoker(delegate
                         {
-                            gvPatient.Rows[i].IsVisible = false;
-                        }
-                        else
+                            for (int i = 0; i < gvPatient.Rows.Count; i++)
+                            {
+                                gvPatient.Rows[i].IsVisible = true;
+                                count += 1;
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        for (int i = 0; i < gvPatient.Rows.Count; i++)
                         {
                             gvPatient.Rows[i].IsVisible = true;
                             count += 1;
+                        }
+                    }
+                    break;
+                case "เฉพาะที่ยังไม่ Convert":
+                    if (gvPatient.InvokeRequired)
+                    {
+                        gvPatient.Invoke(new MethodInvoker(delegate
+                        {
+                            for (int i = 0; i < gvPatient.Rows.Count; i++)
+                            {
+                                if (gvPatient.Rows[i].Cells["IsConvertPreOrder"].Value.ToString().Trim() == "1")
+                                {
+                                    gvPatient.Rows[i].IsVisible = false;
+                                }
+                                else
+                                {
+                                    gvPatient.Rows[i].IsVisible = true;
+                                    count += 1;
+                                }
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        for (int i = 0; i < gvPatient.Rows.Count; i++)
+                        {
+                            if (gvPatient.Rows[i].Cells["IsConvertPreOrder"].Value.ToString().Trim() == "1")
+                            {
+                                gvPatient.Rows[i].IsVisible = false;
+                            }
+                            else
+                            {
+                                gvPatient.Rows[i].IsVisible = true;
+                                count += 1;
+                            }
                         }
                     }
                     break;
                 case "เฉพาะที่ Convert แล้ว":
-                    for (int i = 0; i < gvPatient.Rows.Count; i++)
+                    if (gvPatient.InvokeRequired)
                     {
-                        if (gvPatient.Rows[i].Cells["IsConvertPreOrder"].Value.ToString().Trim() == "1")
+                        gvPatient.Invoke(new MethodInvoker(delegate
                         {
-                            gvPatient.Rows[i].IsVisible = true;
-                            count += 1;
-                        }
-                        else
+                            for (int i = 0; i < gvPatient.Rows.Count; i++)
+                            {
+                                if (gvPatient.Rows[i].Cells["IsConvertPreOrder"].Value.ToString().Trim() == "1")
+                                {
+                                    gvPatient.Rows[i].IsVisible = true;
+                                    count += 1;
+                                }
+                                else
+                                {
+                                    gvPatient.Rows[i].IsVisible = false;
+                                }
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        for (int i = 0; i < gvPatient.Rows.Count; i++)
                         {
-                            gvPatient.Rows[i].IsVisible = false;
+                            if (gvPatient.Rows[i].Cells["IsConvertPreOrder"].Value.ToString().Trim() == "1")
+                            {
+                                gvPatient.Rows[i].IsVisible = true;
+                                count += 1;
+                            }
+                            else
+                            {
+                                gvPatient.Rows[i].IsVisible = false;
+                            }
                         }
                     }
                     break;
                 default:
                     break;
             }
-            lblIsConvertCount.Text = string.Format("พบข้อมูลตรงเงื่อนไข {0} รายการ", count.ToString());
-            if (chkBox.Checked)
+            setLabel(lblIsConvertCount, string.Format("พบข้อมูลตรงเงื่อนไข {0} รายการ", count.ToString()));
+            if (chkBox.InvokeRequired)
             {
-                CheckAll();
+                chkBox.Invoke(new MethodInvoker(delegate
+                {
+                    if (chkBox.Checked)
+                    {
+                        CheckAll();
+                    }
+                }));
             }
-            if (payorChoose != "")
-            { 
-                ddlPayor.SelectedItem.Text = payorChoose;
+            else
+            {
+                if (chkBox.Checked)
+                {
+                    CheckAll();
+                }
+
             }
         }
         private void dtpDateFrom_ValueChanged(object sender, EventArgs e)
@@ -2053,15 +2170,28 @@ namespace MassConvert
         {
             setPayor();
         }
+        /// <summary>
+        /// Search Click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void bwWaiting_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (ddlIsConverted.InvokeRequired)
-            {
-                ddlIsConverted.Invoke(new MethodInvoker(delegate
-                {
-                    ddlIsConverted.SelectedIndex = 0;
-                }));
-            }
+            Find();
+        }
+        private void Find()
+        {
+            //if (ddlIsConverted.InvokeRequired)
+            //{
+            //    ddlIsConverted.Invoke(new MethodInvoker(delegate
+            //    {
+            //        ddlIsConverted.SelectedIndex = 0;
+            //    }));
+            //}
+            //else
+            //{
+            //    ddlIsConverted.SelectedIndex = 0;
+            //}
             setRadButton(btFind, false);
             setPictureBox(pbCountPT, true);
             setLabel(lblCountPT, "");
@@ -2101,6 +2231,7 @@ namespace MassConvert
             strSQL.Append("LTRIM(REPLACE(P.Name, P.PreName, ''))Name,");
             strSQL.Append("P.LastName,");
             strSQL.Append("P.DOE,");
+            strSQL.Append("P.Payor,");
             strSQL.Append("PL.ChildCompany,");
             strSQL.Append("P.StatusOnMobile STS,");
             strSQL.Append("CL.RegDate RegisterDate,");
@@ -2123,11 +2254,26 @@ namespace MassConvert
             {
                 strSQL.Append("AND StatusOnMobile='R' ");
             }
-            if (ddlPayor.SelectedItem.Text.ToString() != "- ทั้งหมด -")
+            if (ddlPayor.InvokeRequired)
             {
-                payor = ddlPayor.SelectedItem.ToString();
-                payorChoose = payor;
-                strSQL.Append("AND Payor='" + payor + "' ");
+                ddlPayor.Invoke(new MethodInvoker(delegate
+                {
+                    if (ddlPayor.SelectedItem.ToString() != "- ทั้งหมด -")
+                    {
+                        payor = ddlPayor.SelectedItem.ToString();
+                        payorChoose = payor;
+                        strSQL.Append("AND Payor='" + payor + "' ");
+                    }
+                }));
+            }
+            else
+            {
+                if (ddlPayor.SelectedItem.ToString() != "- ทั้งหมด -")
+                {
+                    payor = ddlPayor.SelectedItem.ToString();
+                    payorChoose = payor;
+                    strSQL.Append("AND Payor='" + payor + "' ");
+                }
             }
             strSQL.Append("ORDER BY ");
             //strSQL.Append("CL.RegDate ASC;");
@@ -2151,7 +2297,7 @@ namespace MassConvert
                 #endregion
                 try
                 {
-                    setComboBox(ddlPayor, 0);
+                    //setComboBox(ddlIsConverted, 0);
                 }
                 catch (Exception) { }
                 #region Check IsConvertPreOrder
@@ -2168,6 +2314,30 @@ namespace MassConvert
                 }
                 dtPatient.AcceptChanges();
                 #endregion
+                #region SearchIsConvertFilter
+                /*
+                if (ddlIsConverted.InvokeRequired)
+                {
+                    ddlIsConverted.Invoke(new MethodInvoker(delegate
+                    {
+                        if (ddlIsConverted.SelectedIndex > 0)
+                        {
+                            DataView dv = dtPatient.DefaultView;
+                            if (ddlIsConverted.SelectedItem.ToString() == "เฉพาะที่ยังไม่ Convert")
+                            {
+                                dv.RowFilter = "IsConvertPreOrder=0";
+
+                            }
+                            else if(ddlIsConverted.SelectedItem.ToString() == "เฉพาะที่ Convert แล้ว")
+                            {
+                                dv.RowFilter = "IsConvertPreOrder=1";
+                            }
+                            dtPatient = dv.ToTable();
+                        }
+                    }));
+                }
+                */
+                #endregion
                 if (gvPatient.InvokeRequired)
                 {
                     gvPatient.Invoke(new MethodInvoker(delegate
@@ -2180,6 +2350,7 @@ namespace MassConvert
                         gvPatient.Columns["LastName"].Width = 100;
                         gvPatient.Columns["DOE"].Width = 130;
                         gvPatient.Columns["NO"].Width = 40;
+                        gvPatient.Columns["Payor"].Width = 170;
                         gvPatient.Columns["ChildCompany"].Width = 170;
                         gvPatient.Columns["STS"].Width = 40;
                         gvPatient.Columns["RegisterDate"].Width = 130;
@@ -2191,10 +2362,25 @@ namespace MassConvert
                 else
                 {
                     bs.DataSource = dtPatient;
+                    gvPatient.DataSource = bs;
+                    gvPatient.Columns["No"].Width = 20;
+                    gvPatient.Columns["HN"].Width = 100;
+                    gvPatient.Columns["Name"].Width = 100;
+                    gvPatient.Columns["LastName"].Width = 100;
+                    gvPatient.Columns["DOE"].Width = 130;
+                    gvPatient.Columns["NO"].Width = 40;
+                    gvPatient.Columns["Payor"].Width = 170;
+                    gvPatient.Columns["ChildCompany"].Width = 170;
+                    gvPatient.Columns["STS"].Width = 40;
+                    gvPatient.Columns["RegisterDate"].Width = 130;
+                    gvPatient.Columns["SyncWhen"].Width = 130;
+                    gvPatient.Columns["IsConvertPreOrder"].IsVisible = false;
+                    gvPatient.Refresh();
                 }
                 setLabel(lblCountPT, dtPatient.Rows.Count.ToString() + " Record.");
                 setLabel(lblIsConvertCount, string.Format("พบข้อมูลตรงเงื่อนไข {0} รายการ", dtPatient.Rows.Count.ToString()));
                 CheckAll();
+                IsConvertFilter();
             }
             else
             {
@@ -2209,19 +2395,14 @@ namespace MassConvert
                         gvPatient.Refresh();
                     }));
                 }
+                else
+                {
+                    gvPatient.DataSource = bs;
+                    gvPatient.Refresh();
+                }
             }
             setPictureBox(pbCountPT, false);
             setRadButton(btFind, true);
-            if (payor != "")
-            {
-                if (ddlPayor.InvokeRequired)
-                {
-                    ddlPayor.Invoke(new MethodInvoker(delegate
-                    {
-                        ddlPayor.SelectedText = payor;
-                    }));
-                }
-            }
         }
     }
 }

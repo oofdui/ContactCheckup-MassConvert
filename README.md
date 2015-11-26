@@ -1,5 +1,8 @@
 # ContactCheckup-MassConvert
-
+* v.1.17
+	* ปรับ DropDownList กรณีค้นหาแล้วเกิดชื่อบริษัทซ้ำ
+	* สามารถเลือกสถานะการ ConvertPreOrder ได้ก่อนปุ่มกด Search
+	* แก้ไขบัคอื่นๆ
 * v.1.15
 	* เพิ่มโหมด ConvertByPayor โดยเลือกจากช่วงวันที่ลงทะเบียน
 	* เพิ่มการเก็บ Log การ ConvertPreOrder เพื่อดูระยะเวลาในการทำงานแต่ละเคส
