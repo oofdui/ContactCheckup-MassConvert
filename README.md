@@ -1,4 +1,7 @@
 # ContactCheckup-MassConvert
+* v.1.18
+	* เก็บ PatientUID เพิ่มใน Log การ Convert เพื่อสะดวกและถูกต้องในการ Map กับข้อมูลอื่นๆ
+	* เพิ่มหน้า Map Payor กับ PayorDetail สำหรับการทำ AutoMassConvert
 * v.1.17
 	* ปรับ DropDownList กรณีค้นหาแล้วเกิดชื่อบริษัทซ้ำ
 	* สามารถเลือกสถานะการ ConvertPreOrder ได้ก่อนปุ่มกด Search

@@ -21,6 +21,12 @@ namespace MassConvert
 {
     public partial class frmConvertIndividual : Telerik.WinControls.UI.RadForm
     {
+        #region GlobalVariable
+        string MassConvertLogPatientUID = "";
+        string MassConvertLogHN = "";
+        string MassConvertLogUID = "";
+        string MassConvertLogEnable = System.Configuration.ConfigurationManager.AppSettings["MassConvertLogEnable"].Trim().ToLower();
+        #endregion
         #region Attribute
         SQL db;
         string OwnerOrganization = "15";
@@ -157,15 +163,23 @@ namespace MassConvert
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
             string careUID = "2283";
             progressBar1.Value1 = 10;
+            var clsSQL = new clsSQLNative();
             //หาข้อมูลใน tb PatientScheduleOrder ของ OrderNumber ที่ถูกส่งมา
             DataTable Schdt = db.Select_PatientScheduleOrder(OrderNo);
             if (Schdt != null && Schdt.Rows.Count > 0)
             {
                 for (int x = 0; x < Schdt.Rows.Count; x++)
                 {
+                    MassConvertLogUID = "";
                     //เช็คว่ามีการ Convert แล้วหรือยัง
                     if (string.IsNullOrEmpty(Schdt.Rows[x]["PatientVisitUID"].ToString()) || Schdt.Rows[x]["PatientVisitUID"].ToString() == "0")
                     {
+                        #region MassConvertLog
+                        if (MassConvertLogEnable == "true")
+                        {
+                            MassConvertLogUID = clsSQL.Return("INSERT INTO MassConvertLog(HN,StartWhen,Username,Detail,PatientUID) OUTPUT INSERTED.UID VALUES('" + MassConvertLogHN + "',GETDATE(),'" + clsTempData.Username + "','Individual','" + MassConvertLogPatientUID + "');", clsSQLNative.DBType.SQLServer, "MobieConnect");
+                        }
+                        #endregion
                         //Update Booking ของคนไข้คนนี้ให้ Status Flag = 'U'
                         string outMessage = "";
                         if (db.Update_Booking_Status(Schdt.Rows[x]["PatientUID"].ToString(), Schdt.Rows[x]["ScheduledDttm"].ToString(),out outMessage) == false)
@@ -599,6 +613,15 @@ namespace MassConvert
                             }
                         }//  
                     }
+                    #region MassConvertLog
+                    if (MassConvertLogEnable == "true")
+                    {
+                        if (MassConvertLogUID != "")
+                        {
+                            clsSQL.Execute("UPDATE MassConvertLog SET EndWhen=GETDATE() WHERE UID=" + MassConvertLogUID + ";", clsSQLNative.DBType.SQLServer, "MobieConnect");
+                        }
+                    }
+                    #endregion
                 }
                 progressBar1.Value1 = 100;
                 //
@@ -808,6 +831,8 @@ namespace MassConvert
                 dtPatient = db.Select_Patient_By_HN(txtHN.Text.Trim());
                 if (dtPatient.Rows.Count > 0 && dtPatient != null)
                 {
+                    MassConvertLogHN = dtPatient.Rows[0]["HN"].ToString();
+                    MassConvertLogPatientUID = dtPatient.Rows[0]["rowguid"].ToString();
                     txtPTName.Text = dtPatient.Rows[0]["Forename"] + "  " + dtPatient.Rows[0]["Surname"] + "";
                 }
             }

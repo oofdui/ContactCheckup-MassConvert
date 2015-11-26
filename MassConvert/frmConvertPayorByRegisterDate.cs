@@ -26,6 +26,7 @@ namespace MassConvert
         int countExist = 0;
         int countFail = 0;
         string payorChoose = "";
+        string MassConvertLogPatientUID = "";
         string MassConvertLogHN = "";
         string MassConvertLogUID = "";
         string MassConvertLogEnable = System.Configuration.ConfigurationManager.AppSettings["MassConvertLogEnable"].Trim().ToLower();
@@ -398,7 +399,7 @@ namespace MassConvert
                         #region MassConvertLog
                         if (MassConvertLogEnable == "true")
                         {
-                            MassConvertLogUID = clsSQL.Return("INSERT INTO MassConvertLog(HN,StartWhen,Username) OUTPUT INSERTED.UID VALUES('" + MassConvertLogHN + "',GETDATE(),'"+clsTempData.Username+"');",clsSQLNative.DBType.SQLServer, "MobieConnect");
+                            MassConvertLogUID = clsSQL.Return("INSERT INTO MassConvertLog(HN,StartWhen,Username,Detail,PatientUID) OUTPUT INSERTED.UID VALUES('" + MassConvertLogHN + "',GETDATE(),'"+clsTempData.Username+"','PayorByRegisterDate','"+ MassConvertLogPatientUID + "');",clsSQLNative.DBType.SQLServer, "MobieConnect");
                         }
                         #endregion
                         #region setConvertResult
@@ -1810,6 +1811,7 @@ namespace MassConvert
                 if (Convert.ToBoolean(gvPatient.Rows[i].Cells["Check"].Value) == true)
                 {
                     MassConvertLogHN = gvPatient.Rows[i].Cells["HN"].Value.ToString().Trim();
+                    MassConvertLogPatientUID = gvPatient.Rows[i].Cells["PatientUID"].Value.ToString().Trim();
                     var forename = gvPatient.Rows[i].Cells["Name"].Value.ToString().Trim();
                     var surname = gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim();
                     var doe = gvPatient.Rows[i].Cells["DOE"].Value;
@@ -2235,6 +2237,7 @@ namespace MassConvert
             strSQL.Append("PL.ChildCompany,");
             strSQL.Append("P.StatusOnMobile STS,");
             strSQL.Append("CL.RegDate RegisterDate,");
+            strSQL.Append("P.rowguid PatientUID,");
             strSQL.Append("P.SyncWhen,'0' IsConvertPreOrder ");
             strSQL.Append("FROM ");
             strSQL.Append("Patient P ");
@@ -2356,6 +2359,7 @@ namespace MassConvert
                         gvPatient.Columns["RegisterDate"].Width = 130;
                         gvPatient.Columns["SyncWhen"].Width = 130;
                         gvPatient.Columns["IsConvertPreOrder"].IsVisible = false;
+                        gvPatient.Columns["PatientUID"].IsVisible = false;
                         gvPatient.Refresh();
                     }));
                 }
@@ -2375,6 +2379,7 @@ namespace MassConvert
                     gvPatient.Columns["RegisterDate"].Width = 130;
                     gvPatient.Columns["SyncWhen"].Width = 130;
                     gvPatient.Columns["IsConvertPreOrder"].IsVisible = false;
+                    gvPatient.Columns["PatientUID"].IsVisible = false;
                     gvPatient.Refresh();
                 }
                 setLabel(lblCountPT, dtPatient.Rows.Count.ToString() + " Record.");

@@ -610,7 +610,7 @@ namespace MassConvert.Database
             try
             {
                 SqlCommand cmd = new SqlCommand();
-                string SQLstatement = @"Select * from Patient where pasid ='" + pasid + "' ";
+                string SQLstatement = @"Select TOP 1 * from Patient where pasid ='" + pasid + "' ORDER BY DOE DESC";
                 Connect();
                 cmd.Connection = con;
                 cmd.CommandText = SQLstatement;
