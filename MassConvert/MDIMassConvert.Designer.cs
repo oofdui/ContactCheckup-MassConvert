@@ -42,6 +42,8 @@
             this.btMapPackage = new Telerik.WinControls.UI.RadImageButtonElement();
             this.radRibbonBarGroup5 = new Telerik.WinControls.UI.RadRibbonBarGroup();
             this.radImageButtonElement1 = new Telerik.WinControls.UI.RadImageButtonElement();
+            this.radRibbonBarGroup7 = new Telerik.WinControls.UI.RadRibbonBarGroup();
+            this.btMapPayor = new Telerik.WinControls.UI.RadImageButtonElement();
             this.ribbonTab2 = new Telerik.WinControls.UI.RibbonTab();
             this.radRibbonBarGroup3 = new Telerik.WinControls.UI.RadRibbonBarGroup();
             this.btConvertPayor = new Telerik.WinControls.UI.RadImageButtonElement();
@@ -113,7 +115,7 @@
             this.radRibbonBar1.OptionsButton.Text = "Options";
             this.radRibbonBar1.QuickAccessToolBarItems.AddRange(new Telerik.WinControls.RadItem[] {
             this.radButtonElement1});
-            this.radRibbonBar1.Size = new System.Drawing.Size(984, 167);
+            this.radRibbonBar1.Size = new System.Drawing.Size(984, 170);
             this.radRibbonBar1.StartButtonImage = ((System.Drawing.Image)(resources.GetObject("radRibbonBar1.StartButtonImage")));
             this.radRibbonBar1.TabIndex = 8;
             this.radRibbonBar1.Text = "โรงพยาบาลกรุงเทพระยอง";
@@ -124,11 +126,12 @@
             this.ribbonTab1.AccessibleDescription = "Home";
             this.ribbonTab1.AccessibleName = "Home";
             this.ribbonTab1.Class = "RibbonTab";
-            this.ribbonTab1.IsSelected = false;
+            this.ribbonTab1.IsSelected = true;
             this.ribbonTab1.Items.AddRange(new Telerik.WinControls.RadItem[] {
             this.radRibbonBarGroup1,
             this.radRibbonBarGroup2,
-            this.radRibbonBarGroup5});
+            this.radRibbonBarGroup5,
+            this.radRibbonBarGroup7});
             this.ribbonTab1.Name = "ribbonTab1";
             this.ribbonTab1.Text = "Home";
             this.ribbonTab1.Visibility = Telerik.WinControls.ElementVisibility.Visible;
@@ -193,12 +196,40 @@
             this.radImageButtonElement1.Visibility = Telerik.WinControls.ElementVisibility.Visible;
             this.radImageButtonElement1.Click += new System.EventHandler(this.radImageButtonElement1_Click);
             // 
+            // radRibbonBarGroup7
+            // 
+            this.radRibbonBarGroup7.AccessibleDescription = "Map Payor";
+            this.radRibbonBarGroup7.AccessibleName = "Map Payor";
+            this.radRibbonBarGroup7.Alignment = System.Drawing.ContentAlignment.TopLeft;
+            this.radRibbonBarGroup7.AutoSize = true;
+            this.radRibbonBarGroup7.Items.AddRange(new Telerik.WinControls.RadItem[] {
+            this.btMapPayor});
+            this.radRibbonBarGroup7.Name = "radRibbonBarGroup7";
+            this.radRibbonBarGroup7.Text = "Map Payor";
+            this.radRibbonBarGroup7.Visibility = Telerik.WinControls.ElementVisibility.Visible;
+            // 
+            // btMapPayor
+            // 
+            this.btMapPayor.AccessibleDescription = "radImageButtonElement2";
+            this.btMapPayor.AccessibleName = "radImageButtonElement2";
+            this.btMapPayor.AutoSize = false;
+            this.btMapPayor.AutoSizeMode = Telerik.WinControls.RadAutoSizeMode.WrapAroundChildren;
+            this.btMapPayor.BackColor = System.Drawing.Color.White;
+            this.btMapPayor.Bounds = new System.Drawing.Rectangle(0, 0, 80, 80);
+            this.btMapPayor.Image = global::MassConvert.Properties.Resources.icPayorMap;
+            this.btMapPayor.ImageIndexClicked = 0;
+            this.btMapPayor.ImageIndexHovered = 0;
+            this.btMapPayor.Name = "btMapPayor";
+            this.btMapPayor.Text = "Map Payor";
+            this.btMapPayor.Visibility = Telerik.WinControls.ElementVisibility.Visible;
+            this.btMapPayor.Click += new System.EventHandler(this.btMapPayor_Click);
+            // 
             // ribbonTab2
             // 
             this.ribbonTab2.AccessibleDescription = "Convert";
             this.ribbonTab2.AccessibleName = "Convert";
             this.ribbonTab2.Class = "RibbonTab";
-            this.ribbonTab2.IsSelected = true;
+            this.ribbonTab2.IsSelected = false;
             this.ribbonTab2.Items.AddRange(new Telerik.WinControls.RadItem[] {
             this.radRibbonBarGroup3,
             this.radRibbonBarGroup6,
@@ -296,6 +327,7 @@
             this.ClientSize = new System.Drawing.Size(984, 731);
             this.Controls.Add(this.radStatusStrip1);
             this.Controls.Add(this.radRibbonBar1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.Name = "MDIMassConvert";
             this.Text = "โรงพยาบาลกรุงเทพระยอง";
@@ -328,6 +360,8 @@
         private Telerik.WinControls.UI.RadImageButtonElement radImageButtonElement1;
         private Telerik.WinControls.UI.RadRibbonBarGroup radRibbonBarGroup6;
         private Telerik.WinControls.UI.RadImageButtonElement btConvertPayorByRegisterDate;
+        private Telerik.WinControls.UI.RadRibbonBarGroup radRibbonBarGroup7;
+        private Telerik.WinControls.UI.RadImageButtonElement btMapPayor;
     }
 }
 

@@ -2409,5 +2409,9 @@ namespace MassConvert
             setPictureBox(pbCountPT, false);
             setRadButton(btFind, true);
         }
+        private void ddlPayor_Click(object sender, EventArgs e)
+        {
+            setPayor();
+        }
     }
 }

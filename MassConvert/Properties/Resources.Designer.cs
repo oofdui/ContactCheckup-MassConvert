@@ -73,6 +73,16 @@ namespace MassConvert.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icAutoMassConvert {
+            get {
+                object obj = ResourceManager.GetObject("icAutoMassConvert", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icFilter {
             get {
                 object obj = ResourceManager.GetObject("icFilter", resourceCulture);
@@ -93,6 +103,16 @@ namespace MassConvert.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icPayorMap {
+            get {
+                object obj = ResourceManager.GetObject("icPayorMap", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icPrice {
             get {
                 object obj = ResourceManager.GetObject("icPrice", resourceCulture);
@@ -106,6 +126,16 @@ namespace MassConvert.Properties {
         internal static System.Drawing.Bitmap icSearch {
             get {
                 object obj = ResourceManager.GetObject("icSearch", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icSearch20 {
+            get {
+                object obj = ResourceManager.GetObject("icSearch20", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -298,5 +298,15 @@ namespace MassConvert
             frmChild.Text = "Convert Order by Payor (RegisterDate)";
             frmChild.Show();
         }
+
+        private void btMapPayor_Click(object sender, EventArgs e)
+        {
+            CloseFrom();
+            MapPayor frmChild = new MapPayor();
+            frmChild.MdiParent = this;
+            frmChild.WindowState = FormWindowState.Maximized;
+            frmChild.Text = "MapPayor (For AutoConvertPreOrder)";
+            frmChild.Show();
+        }
     }
 }

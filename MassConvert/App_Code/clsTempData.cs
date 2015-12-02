@@ -6,6 +6,8 @@ using System.Text;
 
 class clsTempData
 {
+    private static DataTable dtPayor;
+    private static DataTable dtPayorSearch;
     private static string _username="";
     public static string Username
     {
@@ -171,6 +173,93 @@ class clsTempData
         }
         strSQL.Append("ORDER BY ");
         strSQL.Append("No;");
+        #endregion
+        dt = clsSQL.Bind(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect");
+        #endregion
+        return dt;
+    }
+    /// <summary>
+    /// ใช้ในหน้า MapPayor
+    /// </summary>
+    /// <param name="searchName"></param>
+    /// <returns></returns>
+    public DataTable getPayor(string searchName="")
+    {
+        #region Variable
+        var clsSQL = new clsSQLNative();
+        var strSQL = new StringBuilder();
+        #endregion
+        #region Procedure
+        if(dtPayor==null || dtPayor.Rows.Count==0)
+        {
+            dtPayor = new DataTable();
+            strSQL.Append("SELECT P.Payor,COUNT(MP.UID) CountMap ");
+            strSQL.Append("FROM Patient P WITH(NOLOCK) ");
+            strSQL.Append("LEFT JOIN MassConvertPayorMap MP WITH(NOLOCK) ON P.Payor = MP.Payor AND MP.StatusFlag = 'A' ");
+            strSQL.Append("WHERE P.Payor <> '' AND NOT P.Payor IS NULL ");
+            strSQL.Append("GROUP BY P.Payor ");
+            strSQL.Append("ORDER BY P.Payor;");
+            dtPayor = clsSQL.Bind(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect");
+        }
+        dtPayorSearch = new DataTable();
+        dtPayorSearch = dtPayor.Copy();
+
+        if (searchName.Trim() != "")
+        {
+            if (dtPayorSearch != null && dtPayorSearch.Rows.Count > 0)
+            {
+                DataView dv = dtPayorSearch.DefaultView;
+                dv.RowFilter = "Payor LIKE '%" + searchName + "%'";
+                dtPayorSearch = dv.ToTable();
+            }
+        }
+        #endregion
+        return dtPayorSearch;
+    }
+    public DataTable getDOE(string payorName = "")
+    {
+        #region Variable
+        var dt = new DataTable();
+        var clsSQL = new clsSQLNative();
+        var strSQL = new StringBuilder();
+        #endregion
+        #region Procedure
+        #region SQLQuery
+        strSQL.Append("SELECT ");
+        strSQL.Append("UID,Payor,DOEFrom,DOETo ");
+        strSQL.Append("FROM ");
+        strSQL.Append("MassConvertPayorMap ");
+        strSQL.Append("WHERE ");
+        strSQL.Append("StatusFlag='A' ");
+        strSQL.Append("AND Payor='"+payorName+"' ");
+        strSQL.Append("ORDER BY ");
+        strSQL.Append("DOEFrom ASC;");
+        #endregion
+        dt = clsSQL.Bind(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect");
+        #endregion
+        return dt;
+    }
+    public DataTable getPayorMapSummary()
+    {
+        #region Variable
+        var strSQL = new StringBuilder();
+        var dt = new DataTable();
+        var clsSQL = new clsSQLNative();
+        #endregion
+        #region Procedure
+        #region SQLQuery
+        strSQL.Append("SELECT ");
+        strSQL.Append("MP.Payor Company, MP.DOEFrom,MP.DOETo,IC.CompanyName Payor, PA.Name Agreement, PD.PayorName PayorOffice, PM.PolicyName Policy ");
+        strSQL.Append("FROM ");
+        strSQL.Append("MassConvertPayorMap MP ");
+        strSQL.Append("LEFT JOIN " + System.Configuration.ConfigurationManager.AppSettings["LinkServer"] + ".InsuranceCompany IC ON MP.InsuranceCompanyUID = IC.UID ");
+        strSQL.Append("LEFT JOIN " + System.Configuration.ConfigurationManager.AppSettings["LinkServer"] + ".PayorAgreement PA ON MP.PayorAgreementUID = PA.UID ");
+        strSQL.Append("LEFT JOIN " + System.Configuration.ConfigurationManager.AppSettings["LinkServer"] + ".PayorDetail PD ON MP.PayorDetailUID = PD.UID ");
+        strSQL.Append("LEFT JOIN " + System.Configuration.ConfigurationManager.AppSettings["LinkServer"] + ".PolicyMaster PM ON MP.PolicyMasterUID = PM.UID ");
+        strSQL.Append("WHERE ");
+        strSQL.Append("MP.StatusFlag = 'A' ");
+        strSQL.Append("ORDER BY ");
+        strSQL.Append("MP.Payor,MP.DOEFrom;");
         #endregion
         dt = clsSQL.Bind(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect");
         #endregion

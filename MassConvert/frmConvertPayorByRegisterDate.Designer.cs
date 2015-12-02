@@ -44,6 +44,7 @@
             this.dtpTimeFrom = new Telerik.WinControls.UI.RadDateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.radGroupBox1 = new Telerik.WinControls.UI.RadGroupBox();
+            this.ddlPayor = new System.Windows.Forms.ComboBox();
             this.pbCountPT = new System.Windows.Forms.PictureBox();
             this.dtpDateTo = new System.Windows.Forms.DateTimePicker();
             this.dtpDateFrom = new System.Windows.Forms.DateTimePicker();
@@ -73,7 +74,6 @@
             this.anWaiting = new System.Windows.Forms.PictureBox();
             this.lblProgressDetail = new System.Windows.Forms.Label();
             this.bwWaiting = new System.ComponentModel.BackgroundWorker();
-            this.ddlPayor = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.radLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtFilterPayor)).BeginInit();
@@ -367,6 +367,16 @@
             this.radGroupBox1.Size = new System.Drawing.Size(934, 96);
             this.radGroupBox1.TabIndex = 47;
             this.radGroupBox1.ThemeName = "Desert";
+            // 
+            // ddlPayor
+            // 
+            this.ddlPayor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlPayor.FormattingEnabled = true;
+            this.ddlPayor.Location = new System.Drawing.Point(418, 70);
+            this.ddlPayor.Name = "ddlPayor";
+            this.ddlPayor.Size = new System.Drawing.Size(275, 21);
+            this.ddlPayor.TabIndex = 59;
+            this.ddlPayor.Click += new System.EventHandler(this.ddlPayor_Click);
             // 
             // pbCountPT
             // 
@@ -718,15 +728,6 @@
             // bwWaiting
             // 
             this.bwWaiting.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwWaiting_DoWork);
-            // 
-            // ddlPayor
-            // 
-            this.ddlPayor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ddlPayor.FormattingEnabled = true;
-            this.ddlPayor.Location = new System.Drawing.Point(418, 70);
-            this.ddlPayor.Name = "ddlPayor";
-            this.ddlPayor.Size = new System.Drawing.Size(275, 21);
-            this.ddlPayor.TabIndex = 59;
             // 
             // frmConvertPayorByRegisterDate
             // 

@@ -16,12 +16,30 @@ namespace MassConvert
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Form1());
+            var isAutoMassConvert = false;
             if (args.Length > 0)
             {
-                var clsTempData = new clsTempData();
-                clsTempData.Username = args[0];
+                for(int i = 0; i < args.Length; i++)
+                {
+                    if (args[i].ToLower().Trim() == "auto")
+                    {
+                        isAutoMassConvert = true;
+                    }
+                    else
+                    {
+                        var clsTempData = new clsTempData();
+                        clsTempData.Username = args[i];
+                    }
+                }
             }
-            Application.Run(new MDIMassConvert());
+            if (isAutoMassConvert)
+            {
+                Application.Run(new AutoMassConvert());
+            }
+            else
+            { 
+                Application.Run(new MDIMassConvert());
+            }
         }
     }
 }

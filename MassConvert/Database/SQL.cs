@@ -74,7 +74,8 @@ namespace MassConvert.Database
                                             and IC.StatusFlag ='A'
                                             and (IP.Activeto is null Or IP.Activeto > GETDATE())
                                             and (IC.Activeto is null Or IC.Activeto > GETDATE())
-                                            GROUP BY IP.IdentifyingUID,IC.UID,IC.CompanyName";
+                                            GROUP BY IP.IdentifyingUID,IC.UID,IC.CompanyName 
+                                            ORDER BY CompanyName ASC;";
             try
             {
                 this.Connect();
@@ -610,7 +611,7 @@ namespace MassConvert.Database
             try
             {
                 SqlCommand cmd = new SqlCommand();
-                string SQLstatement = @"Select TOP 1 * from Patient where pasid ='" + pasid + "' ORDER BY DOE DESC";
+                string SQLstatement = @"Select TOP 1 * from Patient where pasid ='" + pasid + "' ORDER BY CWhen DESC";
                 Connect();
                 cmd.Connection = con;
                 cmd.CommandText = SQLstatement;

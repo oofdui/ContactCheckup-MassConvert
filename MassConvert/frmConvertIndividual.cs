@@ -826,13 +826,17 @@ namespace MassConvert
         {
             if (txtHN.Text.Length == 12)
             {
+                System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+                var clsSQL = new clsSQLNative();
+                var strSQL = "";
                 db = new SQL();
                 DataTable dtPatient = new DataTable();
                 dtPatient = db.Select_Patient_By_HN(txtHN.Text.Trim());
                 if (dtPatient.Rows.Count > 0 && dtPatient != null)
                 {
-                    MassConvertLogHN = dtPatient.Rows[0]["HN"].ToString();
-                    MassConvertLogPatientUID = dtPatient.Rows[0]["rowguid"].ToString();
+                    MassConvertLogHN = dtPatient.Rows[0]["PASID"].ToString();
+                    strSQL = "SELECT TOP 1 rowguid FROM Patient WHERE HN='" + MassConvertLogHN + "' /*AND DOE BETWEEN '" + dtpDateFrom.Value.ToString("yyyy-MM-dd HH:mm") + "' AND '" + dtpDateTo.Value.ToString("yyyy-MM-dd HH:mm") + "'*/ ORDER BY DOE DESC;";
+                    MassConvertLogPatientUID = clsSQL.Return(strSQL, clsSQLNative.DBType.SQLServer, "MobieConnect");
                     txtPTName.Text = dtPatient.Rows[0]["Forename"] + "  " + dtPatient.Rows[0]["Surname"] + "";
                 }
             }

@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -95,8 +98,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Code\clsInvoker.cs" />
     <Compile Include="App_Code\clsSQLNative.cs" />
     <Compile Include="App_Code\clsTempData.cs" />
+    <Compile Include="AutoMassConvert.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoMassConvert.Designer.cs">
+      <DependentUpon>AutoMassConvert.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConvertByPayor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -171,6 +181,24 @@
     <Compile Include="frmProchklistMapPackage.Designer.cs">
       <DependentUpon>frmProchklistMapPackage.cs</DependentUpon>
     </Compile>
+    <Compile Include="MapPayor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapPayor.Designer.cs">
+      <DependentUpon>MapPayor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MapPayorDOE.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapPayorDOE.Designer.cs">
+      <DependentUpon>MapPayorDOE.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MapPayorSummary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapPayorSummary.Designer.cs">
+      <DependentUpon>MapPayorSummary.cs</DependentUpon>
+    </Compile>
     <Compile Include="MDIMassConvert.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -186,6 +214,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AutoMassConvert.resx">
+      <DependentUpon>AutoMassConvert.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ConvertByPayor.resx">
       <DependentUpon>ConvertByPayor.cs</DependentUpon>
     </EmbeddedResource>
@@ -222,6 +253,15 @@
     <EmbeddedResource Include="frmProchklistMapPackage.resx">
       <DependentUpon>frmProchklistMapPackage.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MapPayor.resx">
+      <DependentUpon>MapPayor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapPayorDOE.resx">
+      <DependentUpon>MapPayorDOE.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapPayorSummary.resx">
+      <DependentUpon>MapPayorSummary.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MDIMassConvert.resx">
       <DependentUpon>MDIMassConvert.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -252,6 +292,7 @@
     <None Include="Service References\WSCenter\service.wsdl" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="favicon.ico" />
     <Content Include="Images\Icon1.jpg" />
     <Content Include="Images\Icon10.jpg" />
     <Content Include="Images\Icon2.jpg" />
@@ -267,6 +308,9 @@
     <Content Include="Images\IconArrow3.jpg" />
     <Content Include="Images\IconArrow4.jpg" />
     <Content Include="Images\LogoB.jpg" />
+    <None Include="Resources\icAutoMassConvert.png" />
+    <None Include="Resources\icSearch20.png" />
+    <None Include="Resources\icPayorMap.png" />
     <None Include="Resources\anLoading.gif" />
     <None Include="Resources\icFilter.png" />
     <None Include="Resources\icPrice.png" />

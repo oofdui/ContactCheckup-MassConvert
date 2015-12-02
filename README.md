@@ -1,7 +1,15 @@
 # ContactCheckup-MassConvert
+* v.1.21
+	* AutoMassConvert เริ่มทำ โดยการเข้าโหมดผ่าน Argument auto เช่น Massconvert.exe auto หรือ กรณีส่ง Username มาด้วย Massconvert.exe 151246 auto
+* v.1.20
+	* เพิ่มตัวแสดงสีแบคกราวบนชื่อบริษัท กรณีแมพแล้ว
+	* เพิ่มหน้าสรุปข้อมูลการแมพ Payor
+* v.1.19
+	* แก้หน้า Individual ให้เก็บ Log ได้ด้วย
+	* หน้า Map Payor เสร็จสิ้น
 * v.1.18
 	* เก็บ PatientUID เพิ่มใน Log การ Convert เพื่อสะดวกและถูกต้องในการ Map กับข้อมูลอื่นๆ
-	* เพิ่มหน้า Map Payor กับ PayorDetail สำหรับการทำ AutoMassConvert
+	* เพิ่มหน้า Map Payor กับ PayorDetail สำหรับการทำ AutoMassConvert (ยังไม่สมบูรณ์ดี)
 * v.1.17
 	* ปรับ DropDownList กรณีค้นหาแล้วเกิดชื่อบริษัทซ้ำ
 	* สามารถเลือกสถานะการ ConvertPreOrder ได้ก่อนปุ่มกด Search

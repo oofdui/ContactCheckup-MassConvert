@@ -292,3 +292,7 @@ C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup
 C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.ConvertResult.resources
 C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.ConvertByPayor.resources
 C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.frmConvertPayorByRegisterDate.resources
+C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.MapPayor.resources
+C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.MapPayorDOE.resources
+C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.MapPayorSummary.resources
+C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.AutoMassConvert.resources
