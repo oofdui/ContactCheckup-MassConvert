@@ -6,7 +6,13 @@ using System.Text;
 
 class clsTempData
 {
-    private static DataTable dtPayor;
+    private static DataTable _dtPayor;
+    public static DataTable dtPayor
+    {
+        get { return _dtPayor; }
+        set { _dtPayor = value; }
+    }
+
     private static DataTable dtPayorSearch;
     private static string _username="";
     public static string Username
@@ -190,19 +196,19 @@ class clsTempData
         var strSQL = new StringBuilder();
         #endregion
         #region Procedure
-        if(dtPayor==null || dtPayor.Rows.Count==0)
+        if(_dtPayor==null || _dtPayor.Rows.Count==0)
         {
-            dtPayor = new DataTable();
+            _dtPayor = new DataTable();
             strSQL.Append("SELECT P.Payor,COUNT(MP.UID) CountMap ");
             strSQL.Append("FROM Patient P WITH(NOLOCK) ");
             strSQL.Append("LEFT JOIN MassConvertPayorMap MP WITH(NOLOCK) ON P.Payor = MP.Payor AND MP.StatusFlag = 'A' ");
             strSQL.Append("WHERE P.Payor <> '' AND NOT P.Payor IS NULL ");
             strSQL.Append("GROUP BY P.Payor ");
             strSQL.Append("ORDER BY P.Payor;");
-            dtPayor = clsSQL.Bind(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect");
+            _dtPayor = clsSQL.Bind(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect");
         }
         dtPayorSearch = new DataTable();
-        dtPayorSearch = dtPayor.Copy();
+        dtPayorSearch = _dtPayor.Copy();
 
         if (searchName.Trim() != "")
         {
@@ -264,5 +270,78 @@ class clsTempData
         dt = clsSQL.Bind(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect");
         #endregion
         return dt;
+    }
+    public DataTable getPatientAutoMassConvert(string doeFrom = "", string doeTo = "", string registerFrom = "", string registerTo = "", string payor = "")
+    {
+        #region Variable
+        var dt = new DataTable();
+        var clsSQL = new clsSQLNative();
+        var strSQL = new StringBuilder();
+        var linkServer = System.Configuration.ConfigurationManager.AppSettings["LinkServer"];
+        #endregion
+        #region Procedure
+        #region SQLQuery
+        strSQL.Append("SELECT ");
+        strSQL.Append("P.rowguid PatientUID, P.HN,LTRIM(REPLACE(P.Name, P.PreName, ''))Name,P.LastName,P.Payor,P.DOE,CL.RegDate RegisterDate, P.SyncWhen,M.InsuranceCompanyUID,BC_IC.CompanyName InsuranceCompanyName, M.PayorAgreementUID,BC_PA.Name PayorAgreementName, M.PayorDetailUID,BC_PD.PayorName PayorDetailName, M.PolicyMasterUID,BC_PM.PolicyName PolicyMasterName ");
+        strSQL.Append("FROM Patient P ");
+        strSQL.Append("INNER JOIN tblCheckList CL ON P.rowguid = CL.PatientUID AND WFID = 1 ");
+        strSQL.Append("INNER JOIN " + linkServer + ".Patient BC_P ON BC_P.Forename = LTRIM(REPLACE(P.Name, P.PreName, '')) COLLATE Latin1_General_CI_AS AND BC_P.Surname = P.LastName COLLATE Latin1_General_CI_AS AND BC_P.StatusFlag = 'A' ");
+        strSQL.Append("INNER JOIN " + linkServer + ".PatientScheduleOrder BC_PS ON BC_P.UID = BC_PS.PatientUID AND BC_PS.ScheduledDttm = P.DOE AND BC_PS.StatusFlag = 'A' AND(BC_PS.PatientVisitUID = 0 OR BC_PS.PatientVisitUID IS NULL) ");
+        strSQL.Append("LEFT JOIN MassConvertPayorMap M ON P.Payor = M.Payor AND(P.DOE BETWEEN M.DOEFrom AND M.DOETo) AND M.StatusFlag = 'A' ");
+        strSQL.Append("LEFT JOIN " + linkServer + ".InsuranceCompany BC_IC ON M.InsuranceCompanyUID = BC_IC.UID AND BC_IC.StatusFlag = 'A' ");
+        strSQL.Append("LEFT JOIN " + linkServer + ".PayorAgreement BC_PA ON M.PayorAgreementUID = BC_PA.UID AND BC_PA.StatusFlag = 'A' ");
+        strSQL.Append("LEFT JOIN " + linkServer + ".PayorDetail BC_PD ON M.PayorDetailUID = BC_PD.UID AND BC_PD.StatusFlag = 'A' ");
+        strSQL.Append("LEFT JOIN " + linkServer + ".PolicyMaster BC_PM ON M.PolicyMasterUID = BC_PM.UID AND BC_PM.StatusFlag = 'A' ");
+        //หาเพิ่มว่าในเทเบิ้ล Log การ Convert ยังไม่ถูก Convert มาก่อน
+        strSQL.Append("LEFT JOIN MassConvertLog ML ON P.rowguid=ML.PatientUID ");
+        strSQL.Append("WHERE ");
+        strSQL.Append("StatusOnMobile='R' ");
+        strSQL.Append("AND ML.UID IS NULL ");//หาเพิ่มว่าในเทเบิ้ล Log การ Convert ยังไม่ถูก Convert มาก่อน
+        if (payor.Trim() != "")
+        {
+            strSQL.Append("AND P.Payor='" + payor + "' ");
+        }
+        if (registerFrom.Trim() != "")
+        {
+            strSQL.Append("AND CL.RegDate>='"+registerFrom+"' ");
+        }
+        if (registerTo.Trim() != "")
+        {
+            strSQL.Append("AND CL.RegDate<='" + registerTo + "' ");
+        }
+        if (doeFrom.Trim() != "")
+        {
+            strSQL.Append("AND P.DOE>='" + doeFrom + "' ");
+        }
+        if (doeTo.Trim() != "")
+        {
+            strSQL.Append("AND P.DOE<='" + doeTo + "' ");
+        }
+        #endregion
+        dt = clsSQL.Bind(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect");
+        strSQL.Length = 0; strSQL.Capacity = 0;
+        #endregion
+        return dt;
+    }
+    /// <summary>
+    /// เช็ค MassConvertLog ว่ามีการ Convert ไปหรือยัง หรือ กำลัง Convert อยู่รึปล่าว
+    /// </summary>
+    /// <param name="patientGUID"></param>
+    /// <returns></returns>
+    public bool IsConverted(string patientGUID)
+    {
+        #region Variable
+        var result = false;
+        var clsSQL = new clsSQLNative();
+        var strSQL = "";
+        #endregion
+        #region Procedure
+        strSQL = "SELECT COUNT(UID) FROM MassConvertLog WHERE PatientUID='"+patientGUID+"';";
+        if (clsSQL.Return(strSQL, clsSQLNative.DBType.SQLServer, "MobieConnect") !="0")
+        {
+            result = true;
+        }
+        #endregion
+        return result;
     }
 }

@@ -296,3 +296,7 @@ C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup
 C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.MapPayorDOE.resources
 C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.MapPayorSummary.resources
 C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\obj\x86\Debug\MassConvert.AutoMassConvert.resources
+C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\bin\Debug\Telerik.WinControls.xml
+C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\bin\Debug\Telerik.WinControls.GridView.xml
+C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\bin\Debug\Telerik.WinControls.UI.xml
+C:\Users\Oofdui\Dropbox\MyProject\GLS\CarryOn\Checkup\MassConvert\ContactCheckup-MassConvert\MassConvert\bin\Debug\TelerikCommon.xml

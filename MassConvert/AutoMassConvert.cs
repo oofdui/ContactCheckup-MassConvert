@@ -29,21 +29,80 @@ namespace MassConvert
         private void bwDefault_DoWork(object sender, DoWorkEventArgs e)
         {
             #region Variable
+            var clsTempData=new clsTempData();
             var clsInvoker = new clsInvoker();
+            var dt = new DataTable();
+            var doeFrom = "";
+            var doeTo = "";
+            var registerFrom = "";
+            var registerTo = "";
+            var payor = "";
             #endregion
             #region Procedure
-            for(int i = 0; i < 10; i++)
+            if (clsInvoker.getDateTimePickerChecked(dtDOEFrom)) doeFrom = clsInvoker.getDateTimePickerValue(dtDOEFrom).Value.ToString("yyyy-MM-dd HH:mm");
+            if (clsInvoker.getDateTimePickerChecked(dtDOETo)) doeTo = clsInvoker.getDateTimePickerValue(dtDOETo).Value.ToString("yyyy-MM-dd HH:mm");
+            if (clsInvoker.getDateTimePickerChecked(dtREGFrom)) registerFrom = clsInvoker.getDateTimePickerValue(dtREGFrom).Value.ToString("yyyy-MM-dd HH:mm");
+            if (clsInvoker.getDateTimePickerChecked(dtREGTo)) registerTo = clsInvoker.getDateTimePickerValue(dtREGTo).Value.ToString("yyyy-MM-dd HH:mm");
+            if (clsInvoker.getComboBox(ddlPayor)!="- ทั้งหมด -") payor = clsInvoker.getComboBox(ddlPayor);
+            dt = clsTempData.getPatientAutoMassConvert(doeFrom, doeTo, registerFrom, registerTo, payor);
+            if(dt!=null && dt.Rows.Count > 0)
             {
-                if (!bwDefault.CancellationPending)
+                for (int i = 0; i < dt.Rows.Count; i++)
                 {
-                    clsInvoker.setLabel(lblTest, i.ToString());
-                    System.Threading.Thread.Sleep(1000);
+                    if (!bwDefault.CancellationPending)
+                    {
+                        #region ListViewUpdate
+                        clsInvoker.setListView(lvDefault, new string[]
+                        {
+                            DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
+                            dt.Rows[i]["HN"].ToString(),
+                            dt.Rows[i]["Name"].ToString()+" "+dt.Rows[i]["LastName"].ToString(),
+                            dt.Rows[i]["Payor"].ToString(),
+                            dt.Rows[i]["DOE"].ToString(),
+                            dt.Rows[i]["InsuranceCompanyName"].ToString(),
+                            dt.Rows[i]["PayorAgreementName"].ToString(),
+                            dt.Rows[i]["PayorDetailName"].ToString(),
+                            dt.Rows[i]["PolicyMasterName"].ToString()
+                        });
+                        #endregion
+
+                    }
+                    else
+                    {
+                        #region ListViewUpdate
+                        clsInvoker.setListView(lvDefault, new string[]
+                        {
+                            DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
+                            "",
+                            "Cancel by User",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            ""
+                        });
+                        #endregion
+                        break;
+                    }
                 }
-                else
+            }
+            else
+            {
+                #region ListViewUpdate
+                clsInvoker.setListView(lvDefault, new string[]
                 {
-                    clsInvoker.setLabel(lblTest, "Canceled");
-                    break;
-                }
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
+                    "",
+                    "Don't found data for convert",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                });
+                #endregion
             }
             #endregion
         }
@@ -177,14 +236,12 @@ namespace MassConvert
                 {
                     ddlPayor.Items.Add(dt.Rows[i]["Payor"].ToString().Trim());
                 }
-                ddlPayor.SelectedIndex = 0;
             }
             ddlPayor.Items.Insert(0,"- ทั้งหมด -");
             ddlPayor.SelectedIndex = 0;
             #endregion
         }
         #endregion
-
         #region Function
 
         #endregion

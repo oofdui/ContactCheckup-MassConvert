@@ -88,6 +88,20 @@ class clsInvoker
             control.Visible = visible;
         }
     }
+    public void setListView(ListView control,params string[] value)
+    {
+        if (control.InvokeRequired)
+        {
+            control.Invoke(new MethodInvoker(delegate
+            {
+                control.Items.Add(new ListViewItem(value));
+            }));
+        }
+        else
+        {
+            control.Items.Add(new ListViewItem(value));
+        }
+    }
     /// <summary>
     /// 
     /// </summary>
@@ -207,5 +221,66 @@ class clsInvoker
             }
             #endregion
         }
+    }
+
+    public bool getDateTimePickerChecked(DateTimePicker control)
+    {
+        #region Variable
+        var result = false;
+        #endregion
+        if (control.InvokeRequired)
+        {
+            control.Invoke(new MethodInvoker(delegate
+            {
+                result = control.Checked;
+            }));
+        }
+        else
+        {
+            result = control.Checked;
+        }
+        return result;
+    }
+    public DateTime? getDateTimePickerValue(DateTimePicker control)
+    {
+        #region Variable
+        DateTime? result = null;
+        #endregion
+        if (control.InvokeRequired)
+        {
+            control.Invoke(new MethodInvoker(delegate
+            {
+                if (control.Checked)
+                {
+                    result = control.Value;
+                }
+            }));
+        }
+        else
+        {
+            if (control.Checked)
+            {
+                result = control.Value;
+            }
+        }
+        return result;
+    }
+    public string getComboBox(ComboBox control)
+    {
+        #region Variable
+        var result = "";
+        #endregion
+        if (control.InvokeRequired)
+        {
+            control.Invoke(new MethodInvoker(delegate
+            {
+                result = control.SelectedItem.ToString();
+            }));
+        }
+        else
+        {
+            result = control.SelectedItem.ToString();
+        }
+        return result;
     }
 }

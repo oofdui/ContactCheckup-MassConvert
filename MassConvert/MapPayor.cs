@@ -260,6 +260,8 @@ namespace MassConvert
             #endregion
             if (clsSQL.Execute(strSQL.ToString(), clsSQLNative.DBType.SQLServer, "MobieConnect"))
             {
+                clsTempData.dtPayor = null;
+                setPayor(txtPayorSearch.Text.Trim());
                 MessageBox.Show("บันทึกข้อมูลเสร็จสิ้น", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else

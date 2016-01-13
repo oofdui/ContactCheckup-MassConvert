@@ -1,6 +1,10 @@
 # ContactCheckup-MassConvert
+
+*.v.1.22
+	* MassConvert by PayorRegisDate เช็ค DataTable Null ด้วย กันไม่ให้โปรแกรมค้างเฉยๆ กรณีไม่พบข้อมูลใน PatientScheduleOrder
 * v.1.21
 	* AutoMassConvert เริ่มทำ โดยการเข้าโหมดผ่าน Argument auto เช่น Massconvert.exe auto หรือ กรณีส่ง Username มาด้วย Massconvert.exe 151246 auto
+	* ปรับหน้า GenLabNo ในขั้นตอนการ Query ข้อมูลใน B-Connect ให้ดักกรณีไม่เจอ Datatable ด้วย จากเดิมเช็คแค่จำนวน Rows
 * v.1.20
 	* เพิ่มตัวแสดงสีแบคกราวบนชื่อบริษัท กรณีแมพแล้ว
 	* เพิ่มหน้าสรุปข้อมูลการแมพ Payor

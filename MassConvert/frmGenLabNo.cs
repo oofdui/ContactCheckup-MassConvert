@@ -22,6 +22,11 @@ namespace MassConvert
 {
     public partial class frmGenLabNo : Telerik.WinControls.UI.RadForm
     {
+        #region GlobalVariable
+        int countSuccess = 0;
+        int countFail = 0;
+        string failDetail = "";
+        #endregion
         public frmGenLabNo()
         {
             InitializeComponent();
@@ -67,7 +72,7 @@ namespace MassConvert
             string DateTo = dtpDateTo.Value.ToString("yyyy-MM-dd") + " " + dtpTimeTo.Value.ToString("HH:mm");
             string SQL = string.Empty;
 
-            SQL = "SELECT Forename as Name , Surname as LastName , DOE , [NO] , [ChildCompany],[STS] FROM [tblPatientList] WHERE DOE BETWEEN '" + DateFrom + "' AND '" + DateTo + "' ORDER BY NO";
+            SQL = "SELECT Forename as Name , Surname as LastName , DOE , [NO] , [ChildCompany],HNStatus,[STS] FROM [tblPatientList] WHERE DOE BETWEEN '" + DateFrom + "' AND '" + DateTo + "' ORDER BY NO";
 
             dtPatient = exc.data_Table(SQL);
             bs.DataSource = dtPatient;
@@ -77,7 +82,8 @@ namespace MassConvert
             gvPatient.Columns["LastName"].Width = 150;
             gvPatient.Columns["DOE"].Width = 140;
             gvPatient.Columns["NO"].Width = 50;
-            gvPatient.Columns["ChildCompany"].Width = 280;
+            gvPatient.Columns["ChildCompany"].Width = 230;
+            gvPatient.Columns["HNStatus"].Width = 50;
             gvPatient.Columns["STS"].Width = 50;
             gvPatient.Refresh();
 
@@ -131,10 +137,15 @@ namespace MassConvert
                     SQLPT.Append(" and ps.StatusFlag = 'A'");
                     DataTable dt = new DataTable();
                     dt = db.Select_OrderNo(SQLPT.ToString());
-                    if (dt.Rows.Count > 0)
+                    if (dt!=null && dt.Rows.Count > 0)
                     {
                         GenLabEpisode(dt.Rows[0]["ScheduleOrderNumber"].ToString(), dt.Rows[0]["ScheduleOrderNumber"].ToString());
                         //GenLabEpisode(180,180);
+                    }
+                    else
+                    {
+                        countFail += 1;
+                        failDetail += gvPatient.Rows[i].Cells["Name"].Value.ToString() + " " + gvPatient.Rows[i].Cells["LastName"].Value.ToString().Trim() + Environment.NewLine;
                     }
                 }
                 if (progressBar1.Value1 > progressBar1.Maximum)
@@ -144,7 +155,7 @@ namespace MassConvert
                 }
             }
             lblStatus.Text = "Generate lab number sucessful.";
-            MessageBox.Show("Generate lab number sucessful.");
+            MessageBox.Show("Generate lab number sucessful."+Environment.NewLine+ "พบคนไข้ที่ไม่มี PatientScheduleOrder ทั้งหมด "+countFail.ToString()+" คน"+(failDetail!=""?Environment.NewLine+"-- รายชื่อดังนี้ --"+ Environment.NewLine + failDetail:""));
         }
         private void btPrintSticker_Click(object sender, EventArgs e)
         {

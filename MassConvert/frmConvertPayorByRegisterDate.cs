@@ -1839,7 +1839,7 @@ namespace MassConvert
                     DataTable dt = new DataTable();
                     dt = db.Select_OrderNo(SQLPT.ToString());
                     SQLPT.Length = 0;SQLPT.Capacity = 0;
-                    if (dt.Rows.Count > 0)
+                    if (dt!=null && dt.Rows.Count > 0)
                     {
                         #region setConvertResult
                         if (!clsTempData.setConvertResult(out outMessage,

@@ -32,17 +32,22 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AutoMassConvert));
             this.tbDefault = new System.Windows.Forms.TableLayoutPanel();
             this.tbHeader = new System.Windows.Forms.TableLayoutPanel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tbHeaderText = new System.Windows.Forms.TableLayoutPanel();
             this.lblHeader = new System.Windows.Forms.Label();
             this.lblHeaderDetail = new System.Windows.Forms.Label();
             this.tbHRHeader = new System.Windows.Forms.TableLayoutPanel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tbFooter = new System.Windows.Forms.TableLayoutPanel();
             this.lblFooter = new System.Windows.Forms.Label();
             this.lblServerDetail = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tbContent = new System.Windows.Forms.TableLayoutPanel();
+            this.tbSearch = new System.Windows.Forms.TableLayoutPanel();
             this.tbSearchControl = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.dtREGTo = new System.Windows.Forms.DateTimePicker();
+            this.label4 = new System.Windows.Forms.Label();
+            this.dtREGFrom = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -50,31 +55,35 @@
             this.label2 = new System.Windows.Forms.Label();
             this.dtDOEFrom = new System.Windows.Forms.DateTimePicker();
             this.label9 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.dtREGTo = new System.Windows.Forms.DateTimePicker();
-            this.label4 = new System.Windows.Forms.Label();
-            this.dtREGFrom = new System.Windows.Forms.DateTimePicker();
             this.ddlPayor = new System.Windows.Forms.ComboBox();
-            this.tbSearch = new System.Windows.Forms.TableLayoutPanel();
+            this.lblSyncTimer = new System.Windows.Forms.Label();
             this.tbSearchButton = new System.Windows.Forms.TableLayoutPanel();
-            this.btStart = new System.Windows.Forms.Button();
             this.tbSearchButton2 = new System.Windows.Forms.TableLayoutPanel();
+            this.btStart = new System.Windows.Forms.Button();
             this.btStop = new System.Windows.Forms.Button();
             this.anWaiting = new System.Windows.Forms.PictureBox();
+            this.lvDefault = new System.Windows.Forms.ListView();
+            this.chHN = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chCompany = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chDOE = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chPayor = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chAgreement = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chPayorOffice = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chPolicy = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.bwDefault = new System.ComponentModel.BackgroundWorker();
             this.tmDefault = new System.Windows.Forms.Timer(this.components);
-            this.lblSyncTimer = new System.Windows.Forms.Label();
-            this.lblTest = new System.Windows.Forms.Label();
+            this.chWhen = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tbDefault.SuspendLayout();
             this.tbHeader.SuspendLayout();
-            this.tbHeaderText.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.tbHeaderText.SuspendLayout();
             this.tbFooter.SuspendLayout();
             this.tbContent.SuspendLayout();
-            this.tbSearchControl.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
             this.tbSearch.SuspendLayout();
+            this.tbSearchControl.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.tbSearchButton.SuspendLayout();
             this.tbSearchButton2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.anWaiting)).BeginInit();
@@ -121,6 +130,17 @@
             this.tbHeader.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tbHeader.Size = new System.Drawing.Size(710, 70);
             this.tbHeader.TabIndex = 0;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::MassConvert.Properties.Resources.icAutoMassConvert;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(64, 64);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
             // 
             // tbHeaderText
             // 
@@ -175,17 +195,6 @@
             this.tbHRHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tbHRHeader.Size = new System.Drawing.Size(710, 1);
             this.tbHRHeader.TabIndex = 1;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::MassConvert.Properties.Resources.icAutoMassConvert;
-            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // tbFooter
             // 
@@ -243,7 +252,7 @@
             this.tbContent.ColumnCount = 1;
             this.tbContent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tbContent.Controls.Add(this.tbSearch, 0, 0);
-            this.tbContent.Controls.Add(this.lblTest, 0, 1);
+            this.tbContent.Controls.Add(this.lvDefault, 0, 1);
             this.tbContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbContent.Location = new System.Drawing.Point(0, 71);
             this.tbContent.Margin = new System.Windows.Forms.Padding(0);
@@ -253,6 +262,23 @@
             this.tbContent.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tbContent.Size = new System.Drawing.Size(710, 259);
             this.tbContent.TabIndex = 4;
+            // 
+            // tbSearch
+            // 
+            this.tbSearch.AutoSize = true;
+            this.tbSearch.ColumnCount = 2;
+            this.tbSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tbSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tbSearch.Controls.Add(this.tbSearchControl, 0, 0);
+            this.tbSearch.Controls.Add(this.tbSearchButton, 1, 0);
+            this.tbSearch.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbSearch.Location = new System.Drawing.Point(0, 0);
+            this.tbSearch.Margin = new System.Windows.Forms.Padding(0);
+            this.tbSearch.Name = "tbSearch";
+            this.tbSearch.RowCount = 1;
+            this.tbSearch.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tbSearch.Size = new System.Drawing.Size(710, 99);
+            this.tbSearch.TabIndex = 5;
             // 
             // tbSearchControl
             // 
@@ -278,6 +304,64 @@
             this.tbSearchControl.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tbSearchControl.Size = new System.Drawing.Size(432, 99);
             this.tbSearchControl.TabIndex = 4;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Controls.Add(this.dtREGTo, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label4, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.dtREGFrom, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(95, 46);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(337, 26);
+            this.tableLayoutPanel1.TabIndex = 4;
+            // 
+            // dtREGTo
+            // 
+            this.dtREGTo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtREGTo.CustomFormat = "dd/MM/yyyy HH:mm";
+            this.dtREGTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtREGTo.Location = new System.Drawing.Point(184, 3);
+            this.dtREGTo.Name = "dtREGTo";
+            this.dtREGTo.ShowCheckBox = true;
+            this.dtREGTo.Size = new System.Drawing.Size(150, 20);
+            this.dtREGTo.TabIndex = 1;
+            this.dtREGTo.ValueChanged += new System.EventHandler(this.dtREGTo_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.label4.Location = new System.Drawing.Point(159, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(19, 26);
+            this.label4.TabIndex = 0;
+            this.label4.Text = " - ";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // dtREGFrom
+            // 
+            this.dtREGFrom.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtREGFrom.CustomFormat = "dd/MM/yyyy HH:mm";
+            this.dtREGFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtREGFrom.Location = new System.Drawing.Point(3, 3);
+            this.dtREGFrom.Name = "dtREGFrom";
+            this.dtREGFrom.ShowCheckBox = true;
+            this.dtREGFrom.Size = new System.Drawing.Size(150, 20);
+            this.dtREGFrom.TabIndex = 1;
+            this.dtREGFrom.ValueChanged += new System.EventHandler(this.dtREGFrom_ValueChanged);
             // 
             // label1
             // 
@@ -378,64 +462,6 @@
             this.label9.Text = "Payor";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Controls.Add(this.dtREGTo, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label4, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dtREGFrom, 0, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(95, 46);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(337, 26);
-            this.tableLayoutPanel1.TabIndex = 4;
-            // 
-            // dtREGTo
-            // 
-            this.dtREGTo.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.dtREGTo.CustomFormat = "dd/MM/yyyy HH:mm";
-            this.dtREGTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtREGTo.Location = new System.Drawing.Point(184, 3);
-            this.dtREGTo.Name = "dtREGTo";
-            this.dtREGTo.ShowCheckBox = true;
-            this.dtREGTo.Size = new System.Drawing.Size(150, 20);
-            this.dtREGTo.TabIndex = 1;
-            this.dtREGTo.ValueChanged += new System.EventHandler(this.dtREGTo_ValueChanged);
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.label4.Location = new System.Drawing.Point(159, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(19, 26);
-            this.label4.TabIndex = 0;
-            this.label4.Text = " - ";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // dtREGFrom
-            // 
-            this.dtREGFrom.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.dtREGFrom.CustomFormat = "dd/MM/yyyy HH:mm";
-            this.dtREGFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtREGFrom.Location = new System.Drawing.Point(3, 3);
-            this.dtREGFrom.Name = "dtREGFrom";
-            this.dtREGFrom.ShowCheckBox = true;
-            this.dtREGFrom.Size = new System.Drawing.Size(150, 20);
-            this.dtREGFrom.TabIndex = 1;
-            this.dtREGFrom.ValueChanged += new System.EventHandler(this.dtREGFrom_ValueChanged);
-            // 
             // ddlPayor
             // 
             this.ddlPayor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -447,22 +473,15 @@
             this.ddlPayor.TabIndex = 5;
             this.ddlPayor.Click += new System.EventHandler(this.ddlPayor_Click);
             // 
-            // tbSearch
+            // lblSyncTimer
             // 
-            this.tbSearch.AutoSize = true;
-            this.tbSearch.ColumnCount = 2;
-            this.tbSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tbSearch.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tbSearch.Controls.Add(this.tbSearchControl, 0, 0);
-            this.tbSearch.Controls.Add(this.tbSearchButton, 1, 0);
-            this.tbSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbSearch.Location = new System.Drawing.Point(0, 0);
-            this.tbSearch.Margin = new System.Windows.Forms.Padding(0);
-            this.tbSearch.Name = "tbSearch";
-            this.tbSearch.RowCount = 1;
-            this.tbSearch.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tbSearch.Size = new System.Drawing.Size(710, 99);
-            this.tbSearch.TabIndex = 5;
+            this.lblSyncTimer.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSyncTimer.AutoSize = true;
+            this.lblSyncTimer.Location = new System.Drawing.Point(419, 3);
+            this.lblSyncTimer.Name = "lblSyncTimer";
+            this.lblSyncTimer.Size = new System.Drawing.Size(10, 13);
+            this.lblSyncTimer.TabIndex = 6;
+            this.lblSyncTimer.Text = "-";
             // 
             // tbSearchButton
             // 
@@ -481,17 +500,6 @@
             this.tbSearchButton.Size = new System.Drawing.Size(278, 99);
             this.tbSearchButton.TabIndex = 5;
             // 
-            // btStart
-            // 
-            this.btStart.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btStart.Location = new System.Drawing.Point(61, 3);
-            this.btStart.Name = "btStart";
-            this.btStart.Size = new System.Drawing.Size(75, 23);
-            this.btStart.TabIndex = 0;
-            this.btStart.Text = "START";
-            this.btStart.UseVisualStyleBackColor = true;
-            this.btStart.Click += new System.EventHandler(this.btStart_Click);
-            // 
             // tbSearchButton2
             // 
             this.tbSearchButton2.AutoSize = true;
@@ -508,6 +516,17 @@
             this.tbSearchButton2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tbSearchButton2.Size = new System.Drawing.Size(278, 29);
             this.tbSearchButton2.TabIndex = 1;
+            // 
+            // btStart
+            // 
+            this.btStart.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btStart.Location = new System.Drawing.Point(61, 3);
+            this.btStart.Name = "btStart";
+            this.btStart.Size = new System.Drawing.Size(75, 23);
+            this.btStart.TabIndex = 0;
+            this.btStart.Text = "START";
+            this.btStart.UseVisualStyleBackColor = true;
+            this.btStart.Click += new System.EventHandler(this.btStart_Click);
             // 
             // btStop
             // 
@@ -533,6 +552,60 @@
             this.anWaiting.TabStop = false;
             this.anWaiting.Visible = false;
             // 
+            // lvDefault
+            // 
+            this.lvDefault.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chWhen,
+            this.chHN,
+            this.chName,
+            this.chCompany,
+            this.chDOE,
+            this.chPayor,
+            this.chAgreement,
+            this.chPayorOffice,
+            this.chPolicy});
+            this.lvDefault.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvDefault.Location = new System.Drawing.Point(5, 104);
+            this.lvDefault.Margin = new System.Windows.Forms.Padding(5);
+            this.lvDefault.Name = "lvDefault";
+            this.lvDefault.Size = new System.Drawing.Size(700, 150);
+            this.lvDefault.TabIndex = 6;
+            this.lvDefault.UseCompatibleStateImageBehavior = false;
+            this.lvDefault.View = System.Windows.Forms.View.Details;
+            // 
+            // chHN
+            // 
+            this.chHN.Text = "HN";
+            // 
+            // chName
+            // 
+            this.chName.Text = "Name";
+            // 
+            // chCompany
+            // 
+            this.chCompany.Text = "Company";
+            // 
+            // chDOE
+            // 
+            this.chDOE.Text = "DOE";
+            this.chDOE.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // chPayor
+            // 
+            this.chPayor.Text = "Payor";
+            // 
+            // chAgreement
+            // 
+            this.chAgreement.Text = "Agreement";
+            // 
+            // chPayorOffice
+            // 
+            this.chPayorOffice.Text = "PayorOffice";
+            // 
+            // chPolicy
+            // 
+            this.chPolicy.Text = "Policy";
+            // 
             // bwDefault
             // 
             this.bwDefault.WorkerSupportsCancellation = true;
@@ -543,25 +616,10 @@
             this.tmDefault.Interval = 1000;
             this.tmDefault.Tick += new System.EventHandler(this.tmDefault_Tick);
             // 
-            // lblSyncTimer
+            // chWhen
             // 
-            this.lblSyncTimer.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSyncTimer.AutoSize = true;
-            this.lblSyncTimer.Location = new System.Drawing.Point(419, 3);
-            this.lblSyncTimer.Name = "lblSyncTimer";
-            this.lblSyncTimer.Size = new System.Drawing.Size(10, 13);
-            this.lblSyncTimer.TabIndex = 6;
-            this.lblSyncTimer.Text = "-";
-            // 
-            // lblTest
-            // 
-            this.lblTest.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblTest.AutoSize = true;
-            this.lblTest.Location = new System.Drawing.Point(350, 172);
-            this.lblTest.Name = "lblTest";
-            this.lblTest.Size = new System.Drawing.Size(10, 13);
-            this.lblTest.TabIndex = 6;
-            this.lblTest.Text = "-";
+            this.chWhen.Text = "When";
+            this.chWhen.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // AutoMassConvert
             // 
@@ -579,21 +637,21 @@
             this.tbDefault.PerformLayout();
             this.tbHeader.ResumeLayout(false);
             this.tbHeader.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tbHeaderText.ResumeLayout(false);
             this.tbHeaderText.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tbFooter.ResumeLayout(false);
             this.tbFooter.PerformLayout();
             this.tbContent.ResumeLayout(false);
             this.tbContent.PerformLayout();
-            this.tbSearchControl.ResumeLayout(false);
-            this.tbSearchControl.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
             this.tbSearch.ResumeLayout(false);
             this.tbSearch.PerformLayout();
+            this.tbSearchControl.ResumeLayout(false);
+            this.tbSearchControl.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.tbSearchButton.ResumeLayout(false);
             this.tbSearchButton.PerformLayout();
             this.tbSearchButton2.ResumeLayout(false);
@@ -639,6 +697,15 @@
         private System.ComponentModel.BackgroundWorker bwDefault;
         private System.Windows.Forms.Timer tmDefault;
         private System.Windows.Forms.Label lblSyncTimer;
-        private System.Windows.Forms.Label lblTest;
+        private System.Windows.Forms.ListView lvDefault;
+        private System.Windows.Forms.ColumnHeader chHN;
+        private System.Windows.Forms.ColumnHeader chName;
+        private System.Windows.Forms.ColumnHeader chCompany;
+        private System.Windows.Forms.ColumnHeader chDOE;
+        private System.Windows.Forms.ColumnHeader chPayor;
+        private System.Windows.Forms.ColumnHeader chAgreement;
+        private System.Windows.Forms.ColumnHeader chPayorOffice;
+        private System.Windows.Forms.ColumnHeader chPolicy;
+        private System.Windows.Forms.ColumnHeader chWhen;
     }
 }
