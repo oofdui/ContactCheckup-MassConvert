@@ -1,6 +1,8 @@
 # ContactCheckup-MassConvert
 
-*.v.1.22
+* v.1.23
+	* เพิ่มเงื่อนไขการดึงชื่อผู้ป่วยมาให้ Convert โดยเอาเฉพาะที่ HN ถูกต้องเท่านั้น ไม่เอา Merge,Duplicate มาด้วย
+* v.1.22
 	* MassConvert by PayorRegisDate เช็ค DataTable Null ด้วย กันไม่ให้โปรแกรมค้างเฉยๆ กรณีไม่พบข้อมูลใน PatientScheduleOrder
 * v.1.21
 	* AutoMassConvert เริ่มทำ โดยการเข้าโหมดผ่าน Argument auto เช่น Massconvert.exe auto หรือ กรณีส่ง Username มาด้วย Massconvert.exe 151246 auto

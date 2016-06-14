@@ -108,6 +108,7 @@ namespace MassConvert
             strSQL.Append("LEFT JOIN tblPatientList PL ON P.rowguid = PL.PatientUID ");
             strSQL.Append("WHERE ");
             strSQL.Append("(P.DOE BETWEEN '"+DateFrom+"' AND '"+DateTo+"') ");
+            strSQL.Append("AND PL.HNStatus='A' ");
             if (rbAll.Checked)
             {
                 //SQL += "AND StatusOnMobile in ('A','R') ";
