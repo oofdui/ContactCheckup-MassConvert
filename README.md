@@ -1,5 +1,7 @@
 # ContactCheckup-MassConvert
 
+* v.1.24
+	* เพิ่มเงื่อนไขตรวจสอบการ Cancel การตรวจตอนออกโมบายในหน้า ConvertByPayor , ConvertByPayorDate
 * v.1.23
 	* เพิ่มเงื่อนไขการดึงชื่อผู้ป่วยมาให้ Convert โดยเอาเฉพาะที่ HN ถูกต้องเท่านั้น ไม่เอา Merge,Duplicate มาด้วย
 * v.1.22

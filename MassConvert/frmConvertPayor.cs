@@ -106,6 +106,10 @@ namespace MassConvert
             strSQL.Append("FROM ");
             strSQL.Append("Patient P ");
             strSQL.Append("LEFT JOIN tblPatientList PL ON P.rowguid = PL.PatientUID ");
+            if (rbRegister.Checked)
+            {
+                strSQL.Append("INNER JOIN tblCheckList CL ON P.rowguid = CL.PatientUID AND CL.WFID=1 AND CL.ProStatus='3' ");
+            }
             strSQL.Append("WHERE ");
             strSQL.Append("(P.DOE BETWEEN '"+DateFrom+"' AND '"+DateTo+"') ");
             strSQL.Append("AND PL.HNStatus='A' ");

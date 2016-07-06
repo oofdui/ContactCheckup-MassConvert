@@ -2242,6 +2242,10 @@ namespace MassConvert
             strSQL.Append("FROM ");
             strSQL.Append("Patient P ");
             strSQL.Append("INNER JOIN tblCheckList CL ON P.rowguid = CL.PatientUID AND WFID = 1 ");
+            if (rbRegister.Checked)
+            {
+                strSQL.Append("AND CL.ProStatus='3' ");
+            }
             strSQL.Append("LEFT JOIN tblPatientList PL ON P.rowguid = PL.PatientUID ");
             strSQL.Append("WHERE ");
             strSQL.Append("(CL.RegDate BETWEEN '" + DateFrom + "' AND '" + DateTo + "') ");
