@@ -2244,7 +2244,7 @@ namespace MassConvert
             strSQL.Append("INNER JOIN tblCheckList CL ON P.rowguid = CL.PatientUID AND WFID = 1 ");
             if (rbRegister.Checked)
             {
-                strSQL.Append("AND CL.ProStatus='3' ");
+                strSQL.Append("AND (CL.ProStatus='2' OR CL.ProStatus='3') ");
             }
             strSQL.Append("LEFT JOIN tblPatientList PL ON P.rowguid = PL.PatientUID ");
             strSQL.Append("WHERE ");

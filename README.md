@@ -1,5 +1,7 @@
 # ContactCheckup-MassConvert
 
+* v.1.25
+	* แก้เงื่อนไขเวอร์ชัน 1.24 เดิมเช็ค WFID=1 , ProStatus=3 มาเป็นเช็ค ProStatus=3 or 2
 * v.1.24
 	* เพิ่มเงื่อนไขตรวจสอบการ Cancel การตรวจตอนออกโมบายในหน้า ConvertByPayor , ConvertByPayorDate
 * v.1.23
